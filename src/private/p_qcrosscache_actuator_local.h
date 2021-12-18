@@ -2,6 +2,7 @@
 
 #include "../qcrosscache_actuator_interface.h"
 #include "../qcrosscache_types.h"
+#include "../qcrosscache_actuator_manager.h"
 
 namespace QCrossCache {
 
@@ -25,7 +26,7 @@ public:
     //! \param session
     //! \param dataGroup
     //!
-    Q_INVOKABLE explicit ActuatorLocal(QObject *parent, Session *session, const QByteArray &dataGroup);
+    Q_INVOKABLE explicit ActuatorLocal(Server *session, const QByteArray &dataGroup);
 
     //!
     //!
@@ -83,6 +84,6 @@ signals:
     void requestCache(const QByteArray&dataGroup, const QByteArray&key, PoolCacheResponseData response);
 };
 
-Q_CROSSCACHE_REGISTER_INTERFACE(ActuatorLocal)
+Q_CROSSCACHE_REGISTER_INTERFACE(local, ActuatorLocal)
 
 } // namespace QCrossCache

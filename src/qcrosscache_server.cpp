@@ -1,9 +1,11 @@
 #include "./qcrosscache_server.h"
 #include "./qcrosscache_actuator_interface.h"
-
+#include "./qcrosscache_types.h"
+#include <QDebug>
 #include <QVariantHash>
 #include <QVariantMap>
 #include <QVariantList>
+#include <QCryptographicHash>
 
 namespace QCrossCache {
 
@@ -13,11 +15,12 @@ auto&p = *reinterpret_cast<ServerPvt*>(this->p)
 class ServerPvt{
 public:
     Server *parent=nullptr;
-    Server::Service service=Server::Local;
+    QUuid uuid;
+    QByteArray service;
     QByteArray hostName;
     QByteArray passWord;
     QByteArray portNumber;
-    QByteArray dataGroup;
+    ActuatorInterfaceItem *actuatorInterface=nullptr;
     explicit ServerPvt(Server *parent)
     {
         this->parent=parent;
@@ -26,12 +29,18 @@ public:
     virtual ~ServerPvt()
     {
     }
+
+    Server&makeData()
+    {
+        auto serverData=(service+QByteArrayLiteral(".")+hostName+QByteArrayLiteral(".")+passWord+QByteArrayLiteral(".")+portNumber+QByteArrayLiteral(".")).toLower();
+        this->uuid=QUuid::fromString(QString::fromUtf8(QCryptographicHash::hash(serverData, QCryptographicHash::Md5).toHex()));
+        return*this->parent;
+    }
 };
 
 Server::Server(QObject *parent) : QObject(parent)
 {
     this->p=new Server(parent);
-
 }
 
 Server::~Server()
@@ -40,40 +49,38 @@ Server::~Server()
     delete&p;
 }
 
-Server *Server::createServer(const Service &service, const QByteArray &hostName, const QByteArray &passWord, const QByteArray &portNumber, const QByteArray &dataGroup)
+Server *Server::createServer(QObject*parent, ActuatorInterfaceItem *actuatorInterface, const QByteArray &hostName, const QByteArray &passWord, const QByteArray &portNumber)
 {
-    Q_UNUSED(service)
-    Q_UNUSED(hostName)
-    Q_UNUSED(passWord)
-    Q_UNUSED(portNumber)
-    Q_UNUSED(dataGroup)
-    return nullptr;
+    auto server=new Server(parent);
+    auto p =static_cast<ServerPvt*>(server->p);
+    p->actuatorInterface=actuatorInterface;
+    p->hostName=hostName;
+    p->passWord=passWord;
+    p->portNumber=portNumber;
+    p->makeData();
+    return server;
 }
 
-Server *Server::createServer(const QVariant &settings)
+const QUuid &Server::uuid()
 {
-    auto vSetting=settings.toHash();
-    auto service=Service(vSetting.value(QByteArrayLiteral("service")).toInt());
-    auto hostName=vSetting.value(QByteArrayLiteral("hostName")).toByteArray();
-    auto passWord=vSetting.value(QByteArrayLiteral("passWord")).toByteArray();
-    auto portNumber=vSetting.value(QByteArrayLiteral("portNumber")).toByteArray();
-    auto dataGroup=vSetting.value(QByteArrayLiteral("dataGroup")).toByteArray();
-    return createServer(service, hostName, passWord, portNumber, dataGroup);
+    dPvt();
+    return p.uuid;
 }
 
-const Server::Service &Server::service() const
+const QByteArray &Server::service() const
 {
     dPvt();
     return p.service;
 }
 
-void Server::setService(const Service &value)
+Server &Server::setService(const QByteArray &value)
 {
     dPvt();
     if (p.service == value)
-        return;
+        return p.makeData();
     p.service = value;
     emit serviceChanged();
+    return p.makeData();
 }
 
 const QByteArray &Server::hostName() const
@@ -82,13 +89,14 @@ const QByteArray &Server::hostName() const
     return p.hostName;
 }
 
-void Server::setHostName(const QByteArray &value)
+Server &Server::setHostName(const QByteArray &value)
 {
     dPvt();
     if (p.hostName == value)
-        return;
+        return p.makeData();
     p.hostName = value;
     emit hostNameChanged();
+    return p.makeData();
 }
 
 const QByteArray &Server::passWord() const
@@ -97,13 +105,14 @@ const QByteArray &Server::passWord() const
     return p.passWord;
 }
 
-void Server::setPassWord(const QByteArray &value)
+Server &Server::setPassWord(const QByteArray &value)
 {
     dPvt();
     if (p.passWord == value)
-        return;
+        return p.makeData();
     p.passWord = value;
     emit passWordChanged();
+    return p.makeData();
 }
 
 const QByteArray &Server::portNumber() const
@@ -112,28 +121,31 @@ const QByteArray &Server::portNumber() const
     return p.portNumber;
 }
 
-void Server::setPortNumber(const QByteArray &value)
+Server &Server::setPortNumber(const QByteArray &value)
 {
     dPvt();
     if (p.portNumber == value)
-        return;
+        return p.makeData();
     p.portNumber = value;
     emit portNumberChanged();
+    return p.makeData();
 }
 
-const QByteArray &Server::dataGroup() const
+ActuatorInterface *Server::createActuator(const QByteArray &dataGroup)
 {
     dPvt();
-    return p.dataGroup;
-}
+    auto interface=p.actuatorInterface->newObject<ActuatorInterface>(this, dataGroup);
 
-void Server::setDataGroup(const QByteArray &value)
-{
-    dPvt();
-    if (p.dataGroup == value)
-        return;
-    p.dataGroup = value;
-    emit dataGroupChanged();
+    if(interface==nullptr){
+        qWarning()<<QStringLiteral("invalid interface to metaObject: ")+p.actuatorInterface->metaObject.className();
+        return nullptr;
+    }
+
+    if(interface->metaObject()->className()!=p.actuatorInterface->metaObject.className()){
+        qWarning()<<QStringLiteral("incompatible interface(%1) vs metaObject(%2)").arg(interface->metaObject()->className(), p.actuatorInterface->metaObject.className());
+        return nullptr;
+    }
+    return interface;
 }
 
 }

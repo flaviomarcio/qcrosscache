@@ -2,9 +2,12 @@
 
 #include <QObject>
 #include <QVariant>
+#include <QUuid>
 #include "./qcrosscache_global.h"
+#include "./qcrosscache_types.h"
 
 namespace QCrossCache {
+class ActuatorInterface;
 
 //!
 //! \brief The Server class
@@ -20,11 +23,11 @@ public:
 
     Q_ENUM(Service)
 
-    Q_PROPERTY(Service service READ service WRITE setService NOTIFY hostNameChanged)
+    Q_PROPERTY(QUuid uuid READ uuid)
+    Q_PROPERTY(QByteArray service READ service WRITE setService NOTIFY hostNameChanged)
     Q_PROPERTY(QByteArray hostName READ hostName WRITE setHostName NOTIFY hostNameChanged)
     Q_PROPERTY(QByteArray passWord READ passWord WRITE setPassWord NOTIFY passWordChanged)
     Q_PROPERTY(QByteArray portNumber READ portNumber WRITE setPortNumber NOTIFY portNumberChanged)
-    Q_PROPERTY(QByteArray dataGroup READ dataGroup WRITE setDataGroup NOTIFY dataGroupChanged)
 
     //!
     //! \brief Server
@@ -44,26 +47,25 @@ public:
     //! \param dataGroup
     //! \return
     //!
-    static Server*createServer(const Service&service, const QByteArray&hostName, const QByteArray&passWord, const QByteArray&portNumber, const QByteArray&dataGroup=QByteArray());
+    static Server*createServer(QObject *parent, ActuatorInterfaceItem*actuatorInterface, const QByteArray&hostName, const QByteArray&passWord, const QByteArray&portNumber);
 
     //!
-    //! \brief createServer
-    //! \param settings
+    //! \brief uuid
     //! \return
     //!
-    static Server*createServer(const QVariant&settings);
+    const QUuid &uuid();
 
     //!
     //! \brief service
     //! \return
     //!
-    const virtual Service &service() const;
+    const virtual QByteArray &service() const;
 
     //!
     //! \brief setService
     //! \param value
     //!
-    virtual void setService(const Service &value);
+    virtual Server&setService(const QByteArray &value);
 
     //!
     //! \brief hostName
@@ -75,7 +77,7 @@ public:
     //! \brief setHostName
     //! \param value
     //!
-    virtual void setHostName(const QByteArray &value);
+    virtual Server&setHostName(const QByteArray &value);
 
     //!
     //! \brief passWord
@@ -87,7 +89,7 @@ public:
     //! \brief setPassWord
     //! \param value
     //!
-    virtual void setPassWord(const QByteArray &value);
+    virtual Server&setPassWord(const QByteArray &value);
 
     //!
     //! \brief portNumber
@@ -99,19 +101,15 @@ public:
     //! \brief setPortNumber
     //! \param value
     //!
-    virtual void setPortNumber(const QByteArray &value);
+    virtual Server&setPortNumber(const QByteArray &value);
 
     //!
-    //! \brief dataGroup
+    //! \brief createActuator
+    //! \param dataGroup
     //! \return
     //!
-    const virtual QByteArray &dataGroup() const;
+    virtual ActuatorInterface*createActuator(const QByteArray &dataGroup=QByteArray());
 
-    //!
-    //! \brief setDataGroup
-    //! \param value
-    //!
-    virtual void setDataGroup(const QByteArray &value);
 private:
     void*p=nullptr;
 signals:

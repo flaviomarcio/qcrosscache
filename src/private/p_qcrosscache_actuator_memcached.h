@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../qcrosscache_actuator_interface.h"
+#include "../qcrosscache_actuator_manager.h"
 
 namespace QCrossCache {
 
@@ -20,15 +21,20 @@ public:
 
     //!
     //! \brief ActuatorMemcached
-    //! \param parent
-    //! \param session
+    //! \param server
     //! \param dataGroup
     //!
-    Q_INVOKABLE explicit ActuatorMemcached(QObject *parent, Session *session, const QByteArray &dataGroup);
+    Q_INVOKABLE explicit ActuatorMemcached(Server *server, const QByteArray &dataGroup);
 
     //!
     //!
     ~ActuatorMemcached();
+
+    //!
+    //! \brief service
+    //! \return
+    //!
+    Q_INVOKABLE virtual QByteArray service()const;
 
     //!
     //! \brief put
@@ -81,6 +87,6 @@ private:
 signals:
 };
 
-Q_CROSSCACHE_REGISTER_INTERFACE(ActuatorMemcached)
+Q_CROSSCACHE_REGISTER_INTERFACE(memcached,ActuatorMemcached)
 
 } // namespace QCrossCache

@@ -4,12 +4,9 @@
 #include <QVariant>
 #include "./qcrosscache_global.h"
 
-#define Q_CROSSCACHE_REGISTER_INTERFACE(object)\
-static auto const interface__##object=QCrossCache::ActuatorInterface::registerInterface(object::staticMetaObject);
-
 namespace QCrossCache {
 
-class Session;
+class ActuatorInterfaceItem;
 class Server;
 
 
@@ -31,7 +28,7 @@ public:
     //! \param groupData
     //! \param parent
     //!
-    Q_INVOKABLE explicit ActuatorInterface(QObject *parent, Session *session, const QByteArray &dataGroup);
+    Q_INVOKABLE explicit ActuatorInterface(Server*server, const QByteArray &dataGroup);
 
     //!
     //!
@@ -95,24 +92,7 @@ public:
     //! \return
     //!
     Q_INVOKABLE virtual bool listKeys(const QByteArray&key, QVector<QByteArray>&listKeys);
-protected:
 
-    //!
-    //! \brief createServer
-    //! \param hostName
-    //! \param passWord
-    //! \param portNumber
-    //! \param dataGroup
-    //! \return
-    //!
-    static Server*createServer(const QByteArray&hostName, const QByteArray&passWord, const QByteArray&portNumber, const QByteArray&dataGroup=QByteArray());
-
-    //!
-    //! \brief createServer
-    //! \param settings
-    //! \return
-    //!
-    static Server*createServer(const QVariant&settings);
 private:
     void*p=nullptr;
 signals:
