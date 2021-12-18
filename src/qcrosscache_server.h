@@ -13,6 +13,14 @@ class Q_CROSSCACHE_EXPORT Server : public QObject
 {
     Q_OBJECT
 public:
+
+    enum Service{
+        Local=0, Memcached=1
+    };
+
+    Q_ENUM(Service)
+
+    Q_PROPERTY(Service service READ service WRITE setService NOTIFY hostNameChanged)
     Q_PROPERTY(QByteArray hostName READ hostName WRITE setHostName NOTIFY hostNameChanged)
     Q_PROPERTY(QByteArray passWord READ passWord WRITE setPassWord NOTIFY passWordChanged)
     Q_PROPERTY(QByteArray portNumber READ portNumber WRITE setPortNumber NOTIFY portNumberChanged)
@@ -36,7 +44,7 @@ public:
     //! \param dataGroup
     //! \return
     //!
-    static Server*createServer(const QByteArray&hostName, const QByteArray&passWord, const QByteArray&portNumber, const QByteArray&dataGroup=QByteArray());
+    static Server*createServer(const Service&service, const QByteArray&hostName, const QByteArray&passWord, const QByteArray&portNumber, const QByteArray&dataGroup=QByteArray());
 
     //!
     //! \brief createServer
@@ -44,6 +52,18 @@ public:
     //! \return
     //!
     static Server*createServer(const QVariant&settings);
+
+    //!
+    //! \brief service
+    //! \return
+    //!
+    const virtual Service &service() const;
+
+    //!
+    //! \brief setService
+    //! \param value
+    //!
+    virtual void setService(const Service &value);
 
     //!
     //! \brief hostName
@@ -95,6 +115,7 @@ public:
 private:
     void*p=nullptr;
 signals:
+    void serviceChanged();
     void hostNameChanged();
     void passWordChanged();
     void portNumberChanged();

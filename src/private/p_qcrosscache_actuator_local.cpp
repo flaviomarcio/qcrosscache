@@ -1,5 +1,6 @@
 #include "./p_qcrosscache_actuator_local.h"
 #include "../qcrosscache_session.h"
+#include "../qcrosscache_pool_cache.h"
 
 namespace QCrossCache {
 
@@ -10,6 +11,7 @@ class ActuatorLocalPvt{
 public:
     ActuatorLocal*parent=nullptr;
     QMetaObject*actuatorMetaObject=nullptr;
+    PoolCache&instance=QCrossCache::PoolCache::instance();
     explicit ActuatorLocalPvt(ActuatorLocal *parent)
     {
         this->parent=parent;
@@ -18,17 +20,22 @@ public:
     virtual ~ActuatorLocalPvt()
     {
     }
+
 };
 
 
 ActuatorLocal::ActuatorLocal(QObject *parent) : ActuatorInterface(parent)
 {
     this->p=new ActuatorLocalPvt(this);
+    dPvt();
+    QObject::connect(this, &ActuatorLocal::requestCache, &p.instance, &PoolCache::cacheGet);
 }
 
 ActuatorLocal::ActuatorLocal(QObject *parent, Session *session, const QByteArray &dataGroup) : ActuatorInterface(parent, session, dataGroup)
 {
     this->p=new ActuatorLocalPvt(this);
+    dPvt();
+    QObject::disconnect(this, &ActuatorLocal::requestCache, &p.instance, &PoolCache::cacheGet);
 }
 
 ActuatorLocal::~ActuatorLocal()

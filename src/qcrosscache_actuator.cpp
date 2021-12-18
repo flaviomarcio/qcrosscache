@@ -25,18 +25,19 @@ public:
 
 Actuator::Actuator(QObject *parent):ActuatorInterface(parent)
 {
+    this->p=new ActuatorPvt(this,nullptr);
 
 }
 
 Actuator::Actuator(QObject *parent, Session *session, const QByteArray &dataGroup):ActuatorInterface(parent, session, dataGroup)
 {
-    Q_UNUSED(session)
-
+    this->p=new ActuatorPvt(this, session);
 }
 
 Actuator::~Actuator()
 {
-
+    dPvt();
+    delete&p;
 }
 
 bool Actuator::put(const QByteArray &key, QByteArray &data)

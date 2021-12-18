@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../qcrosscache_actuator_interface.h"
+#include "../qcrosscache_types.h"
 
 namespace QCrossCache {
 
@@ -79,6 +80,7 @@ public:
 private:
     void*p=nullptr;
 signals:
+    void requestCache(const QByteArray&dataGroup, const QByteArray&key, PoolCacheResponseData response);
 };
 
 Q_CROSSCACHE_REGISTER_INTERFACE(ActuatorLocal)

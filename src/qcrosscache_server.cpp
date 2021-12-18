@@ -13,6 +13,7 @@ auto&p = *reinterpret_cast<ServerPvt*>(this->p)
 class ServerPvt{
 public:
     Server *parent=nullptr;
+    Server::Service service=Server::Local;
     QByteArray hostName;
     QByteArray passWord;
     QByteArray portNumber;
@@ -39,8 +40,9 @@ Server::~Server()
     delete&p;
 }
 
-Server *Server::createServer(const QByteArray &hostName, const QByteArray &passWord, const QByteArray &portNumber, const QByteArray &dataGroup)
+Server *Server::createServer(const Service &service, const QByteArray &hostName, const QByteArray &passWord, const QByteArray &portNumber, const QByteArray &dataGroup)
 {
+    Q_UNUSED(service)
     Q_UNUSED(hostName)
     Q_UNUSED(passWord)
     Q_UNUSED(portNumber)
@@ -51,11 +53,27 @@ Server *Server::createServer(const QByteArray &hostName, const QByteArray &passW
 Server *Server::createServer(const QVariant &settings)
 {
     auto vSetting=settings.toHash();
+    auto service=Service(vSetting.value(QByteArrayLiteral("service")).toInt());
     auto hostName=vSetting.value(QByteArrayLiteral("hostName")).toByteArray();
     auto passWord=vSetting.value(QByteArrayLiteral("passWord")).toByteArray();
     auto portNumber=vSetting.value(QByteArrayLiteral("portNumber")).toByteArray();
     auto dataGroup=vSetting.value(QByteArrayLiteral("dataGroup")).toByteArray();
-    return createServer(hostName, passWord, portNumber, dataGroup);
+    return createServer(service, hostName, passWord, portNumber, dataGroup);
+}
+
+const Server::Service &Server::service() const
+{
+    dPvt();
+    return p.service;
+}
+
+void Server::setService(const Service &value)
+{
+    dPvt();
+    if (p.service == value)
+        return;
+    p.service = value;
+    emit serviceChanged();
 }
 
 const QByteArray &Server::hostName() const
