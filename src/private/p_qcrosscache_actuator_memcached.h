@@ -31,10 +31,29 @@ public:
     ~ActuatorMemcached();
 
     //!
-    //! \brief service
+    //! \brief connect
     //! \return
     //!
-    Q_INVOKABLE virtual QByteArray service()const;
+    virtual bool connect();
+
+    //!
+    //! \brief disconnect
+    //! \return
+    //!
+    virtual bool disconnect();
+
+    //!
+    //! \brief isConnected
+    //! \return
+    //!
+    virtual bool isConnected();
+
+    //!
+    //! \brief exists
+    //! \param key
+    //! \return
+    //!
+    virtual bool exists(const QByteArray&key);
 
     //!
     //! \brief put
@@ -42,7 +61,7 @@ public:
     //! \param data
     //! \return
     //!
-    Q_INVOKABLE virtual bool put(const QByteArray&key, QByteArray&data);
+    Q_INVOKABLE virtual bool put(const QByteArray&key, const QByteArray &data);
 
     //!
     //! \brief get
@@ -50,7 +69,7 @@ public:
     //! \param data
     //! \return
     //!
-    Q_INVOKABLE virtual bool get(const QByteArray&key, QByteArray&data);
+    Q_INVOKABLE virtual bool get(const QByteArray&key, QByteArray &data);
 
     //!
     //! \brief get
@@ -67,21 +86,6 @@ public:
     //!
     Q_INVOKABLE virtual bool remove(const QByteArray&key);
 
-    //!
-    //! \brief list
-    //! \param key
-    //! \param listKeys
-    //! \return
-    //!
-    Q_INVOKABLE virtual bool list(const QByteArray&key, QVector<QByteArray>&listKeys);
-
-    //!
-    //! \brief listKeys
-    //! \param key
-    //! \param listKeys
-    //! \return
-    //!
-    Q_INVOKABLE virtual bool listKeys(const QByteArray&key, QVector<QByteArray>&listKeys);
 private:
     void*p=nullptr;
 signals:

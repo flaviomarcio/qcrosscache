@@ -38,7 +38,7 @@ public:
     //! \param data
     //! \return
     //!
-    Q_INVOKABLE virtual bool put(const QByteArray&key, QByteArray&data);
+    Q_INVOKABLE virtual bool put(const QByteArray&key, const QByteArray &data);
 
     //!
     //! \brief get

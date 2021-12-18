@@ -44,7 +44,7 @@ ActuatorLocal::~ActuatorLocal()
     delete&p;
 }
 
-bool ActuatorLocal::put(const QByteArray &key, QByteArray &data)
+bool ActuatorLocal::put(const QByteArray &key, const QByteArray &data)
 {
     Q_UNUSED(key)
     Q_UNUSED(data)

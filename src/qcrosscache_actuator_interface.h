@@ -35,16 +35,35 @@ public:
     ~ActuatorInterface();
 
     //!
-    //! \brief interfaceRegistered
+    //! \brief dataGroup
     //! \return
     //!
-    static const QVector<const QMetaObject *> &interfaceRegistered();
+    virtual QByteArray &dataGroup()const;
 
     //!
-    //! \brief interfaceRegister
-    //! \param metaObject
+    //! \brief connect
+    //! \return
     //!
-    static const QMetaObject &registerInterface(const QMetaObject &metaObject);
+    virtual bool connect();
+
+    //!
+    //! \brief disconnect
+    //! \return
+    //!
+    virtual bool disconnect();
+
+    //!
+    //! \brief isConnected
+    //! \return
+    //!
+    virtual bool isConnected();
+
+    //!
+    //! \brief exists
+    //! \param key
+    //! \return
+    //!
+    Q_INVOKABLE virtual bool exists(const QByteArray&key);
 
     //!
     //! \brief put
@@ -52,7 +71,7 @@ public:
     //! \param data
     //! \return
     //!
-    Q_INVOKABLE virtual bool put(const QByteArray&key, QByteArray&data);
+    Q_INVOKABLE virtual bool put(const QByteArray&key, const QByteArray&data);
 
     //!
     //! \brief get
@@ -68,7 +87,7 @@ public:
     //! \param data
     //! \return
     //!
-    Q_INVOKABLE virtual bool take(const QByteArray&key, QByteArray&data);
+    Q_INVOKABLE virtual bool take(const QByteArray&key, QByteArray &data);
 
     //!
     //! \brief remove

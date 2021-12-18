@@ -12,6 +12,7 @@ class ActuatorInterfacePvt{
 public:
     ActuatorInterface*parent=nullptr;
     Server*server=nullptr;
+    bool connected=false;
     QByteArray dataGroup;
     explicit ActuatorInterfacePvt(ActuatorInterface *parent, Server *server, const QByteArray &dataGroup)
     {
@@ -41,7 +42,34 @@ ActuatorInterface::~ActuatorInterface()
     delete&p;
 }
 
-bool ActuatorInterface::put(const QByteArray &key, QByteArray &data)
+QByteArray &ActuatorInterface::dataGroup() const
+{
+    dPvt();
+    return p.dataGroup;
+}
+
+bool ActuatorInterface::connect()
+{
+    return false;
+}
+
+bool ActuatorInterface::disconnect()
+{
+    return false;
+}
+
+bool ActuatorInterface::isConnected()
+{
+    return false;
+}
+
+bool ActuatorInterface::exists(const QByteArray &key)
+{
+    Q_UNUSED(key)
+    return false;
+}
+
+bool ActuatorInterface::put(const QByteArray &key, const QByteArray &data)
 {
     Q_UNUSED(key)
     Q_UNUSED(data)
