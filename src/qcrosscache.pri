@@ -7,6 +7,9 @@ CONFIG += c++17
 CONFIG += silent
 CONFIG -=qtquickcompiler
 
+#libmamcached
+LIBS += -lmemcached
+
 INCLUDEPATH+=$$PWD
 
 HEADERS += \

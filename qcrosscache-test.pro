@@ -17,5 +17,6 @@ QMAKE_CXXFLAGS += -DQCROSSCACHE_TEST_MODE=\\\"$$QCROSSCACHE_TEST_MODE\\\"
 LIBS += -lgmock
 LIBS += -lgtest
 
+
 include($$PWD/test/qcrosscache-test.pri)
 
