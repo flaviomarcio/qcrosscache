@@ -35,6 +35,12 @@ public:
     ~ActuatorInterface();
 
     //!
+    //! \brief server
+    //! \return
+    //!
+    virtual Server*server();
+
+    //!
     //! \brief dataGroup
     //! \return
     //!

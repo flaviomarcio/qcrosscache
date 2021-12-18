@@ -1,4 +1,5 @@
 #include "./p_qcrosscache_actuator_memcached.h"
+#include "../qcrosscache_server.h"
 #include <QDebug>
 
 extern "C" {
@@ -18,39 +19,13 @@ public:
     memcached_return rc=MEMCACHED_FAILURE;
     int expire_time = 0;
     uint32_t flag = 0;
-
-
     explicit ActuatorMemcachedPvt(ActuatorMemcached *parent)
     {
         this->parent=parent;
     }
-
     virtual ~ActuatorMemcachedPvt()
     {
     }
-
-    bool setCacheData(QString key, QString value)
-    {
-        auto ckey = key.toStdString();
-        char *cvalue = value.toLocal8Bit().data();
-        rc = memcached_set_by_key(memc, "g",1, ckey.c_str(), key.length(), cvalue, value.length(), expire_time, flag);
-        if(rc==MEMCACHED_SUCCESS) return true;
-        else return false;
-    }
-
-    bool getCacheData(QString key,QString &value,size_t &value_length,uint32_t &flags)
-    {
-        qDebug()<<value_length;
-        auto ckey = key.toStdString();
-        char *result = memcached_get_by_key(memc, "g",1, ckey.c_str(), ckey.length(), &value_length, &flags,&rc);
-        if(rc==MEMCACHED_SUCCESS){
-            value = QString::fromUtf8(result);
-            return true;
-        }else return false;
-
-    }
-
-
 };
 
 
@@ -74,7 +49,7 @@ bool ActuatorMemcached::connect()
 {
     dPvt();
     p.memc = memcached_create(nullptr);
-    p.servers = memcached_server_list_append(nullptr, "127.0.0.1", 11211, &p.rc);
+    p.servers = memcached_server_list_append(nullptr, this->server()->hostName(), this->server()->portNumber().toInt(), &p.rc);
     p.rc = memcached_server_push(p.memc, p.servers);
     memcached_free(p.memc);
     if(p.rc==MEMCACHED_SUCCESS)

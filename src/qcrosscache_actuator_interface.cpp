@@ -42,6 +42,12 @@ ActuatorInterface::~ActuatorInterface()
     delete&p;
 }
 
+Server *ActuatorInterface::server()
+{
+    dPvt();
+    return p.server;
+}
+
 QByteArray &ActuatorInterface::dataGroup() const
 {
     dPvt();
