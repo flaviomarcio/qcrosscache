@@ -6,33 +6,33 @@
 
 namespace QCrossCache {
 
-class ActuatorInterfaceItem;
+class ClientItem;
 class Server;
-
+class ActuatorInterface;
 
 //!
-//! \brief The ActuatorInterface class
+//! \brief The Client class
 //!
-class Q_CROSSCACHE_EXPORT ActuatorInterface : public QObject
+class Q_CROSSCACHE_EXPORT Client : public QObject
 {
     Q_OBJECT
 public:
     //!
-    //! \brief ActuatorInterface
+    //! \brief Client
     //! \param parent
     //!
-    Q_INVOKABLE explicit ActuatorInterface(QObject *parent = nullptr);
+    Q_INVOKABLE explicit Client(QObject*parent=nullptr);
 
     //!
-    //! \brief ActuatorInterface
-    //! \param groupData
+    //! \brief Client
     //! \param parent
+    //! \param interface
     //!
-    Q_INVOKABLE explicit ActuatorInterface(Server*server, const QByteArray &dataGroup);
+    explicit Client(QObject*parent, ActuatorInterface *interface);
 
     //!
     //!
-    ~ActuatorInterface();
+    ~Client();
 
     //!
     //! \brief server
@@ -44,7 +44,7 @@ public:
     //! \brief dataGroup
     //! \return
     //!
-    virtual QByteArray &dataGroup()const;
+    virtual QByteArray dataGroup()const;
 
     //!
     //! \brief connect
@@ -81,6 +81,7 @@ public:
     //! \brief put
     //! \param key
     //! \param data
+    //! \param expiration
     //! \return
     //!
     virtual bool put(const QByteArray&key, const QByteArray&data, const quint64 expiration);
@@ -94,7 +95,7 @@ public:
     virtual QByteArray get(const QByteArray&key);
 
     //!
-    //! \brief get
+    //! \brief take
     //! \param key
     //! \param data
     //! \return
@@ -111,7 +112,6 @@ public:
     //!
     //! \brief list
     //! \param key
-    //! \param listKeys
     //! \return
     //!
     virtual QVector<QByteArray> list(const QByteArray&key);
@@ -119,7 +119,6 @@ public:
     //!
     //! \brief listKeys
     //! \param key
-    //! \param listKeys
     //! \return
     //!
     virtual QVector<QByteArray> listKeys(const QByteArray&key);

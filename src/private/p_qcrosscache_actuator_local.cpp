@@ -1,6 +1,6 @@
 #include "./p_qcrosscache_actuator_local.h"
 #include "../qcrosscache_server.h"
-#include "../qcrosscache_pool_cache.h"
+#include "../qcrosscache_pool.h"
 
 namespace QCrossCache {
 
@@ -11,7 +11,7 @@ class ActuatorLocalPvt{
 public:
     ActuatorLocal*parent=nullptr;
     QMetaObject*actuatorMetaObject=nullptr;
-    PoolCache&instance=QCrossCache::PoolCache::instance();
+    Pool&instance=QCrossCache::Pool::instance();
     explicit ActuatorLocalPvt(ActuatorLocal *parent)
     {
         this->parent=parent;
@@ -27,15 +27,11 @@ public:
 ActuatorLocal::ActuatorLocal(QObject *parent) : ActuatorInterface(parent)
 {
     this->p=new ActuatorLocalPvt(this);
-    dPvt();
-    QObject::connect(this, &ActuatorLocal::requestCache, &p.instance, &PoolCache::cacheGet);
 }
 
 ActuatorLocal::ActuatorLocal(Server *server, const QByteArray &dataGroup) : ActuatorInterface(server, dataGroup)
 {
     this->p=new ActuatorLocalPvt(this);
-    dPvt();
-    QObject::disconnect(this, &ActuatorLocal::requestCache, &p.instance, &PoolCache::cacheGet);
 }
 
 ActuatorLocal::~ActuatorLocal()
@@ -44,25 +40,29 @@ ActuatorLocal::~ActuatorLocal()
     delete&p;
 }
 
-bool ActuatorLocal::put(const QByteArray &key, const QByteArray &data)
+bool ActuatorLocal::clear()
 {
-    Q_UNUSED(key)
-    Q_UNUSED(data)
     return false;
 }
 
-bool ActuatorLocal::get(const QByteArray &key, QByteArray &data)
+bool ActuatorLocal::put(const QByteArray &key, const QByteArray &data, const quint64 expiration)
 {
     Q_UNUSED(key)
     Q_UNUSED(data)
+    Q_UNUSED(expiration)
     return false;
 }
 
-bool ActuatorLocal::take(const QByteArray &key, QByteArray &data)
+QByteArray ActuatorLocal::get(const QByteArray &key)
 {
     Q_UNUSED(key)
-    Q_UNUSED(data)
-    return false;
+    return {};
+}
+
+QByteArray ActuatorLocal::take(const QByteArray &key)
+{
+    Q_UNUSED(key)
+    return {};
 }
 
 bool ActuatorLocal::remove(const QByteArray &key)
@@ -71,18 +71,16 @@ bool ActuatorLocal::remove(const QByteArray &key)
     return false;
 }
 
-bool ActuatorLocal::list(const QByteArray &key, QVector<QByteArray> &listKeys)
+QVector<QByteArray> ActuatorLocal::list(const QByteArray &key)
 {
     Q_UNUSED(key)
-    Q_UNUSED(listKeys)
-    return false;
+    return {};
 }
 
-bool ActuatorLocal::listKeys(const QByteArray &key, QVector<QByteArray> &listKeys)
+QVector<QByteArray> ActuatorLocal::listKeys(const QByteArray &key)
 {
     Q_UNUSED(key)
-    Q_UNUSED(listKeys)
-    return false;
+    return {};
 }
 
 } // namespace QCrossCache

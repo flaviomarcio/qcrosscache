@@ -20,7 +20,7 @@ public:
     QByteArray hostName;
     QByteArray passWord;
     QByteArray portNumber;
-    ActuatorInterfaceItem *actuatorInterface=nullptr;
+    ActuatorInterfaceItem *ActuatorInterface=nullptr;
     explicit ServerPvt(Server *parent)
     {
         this->parent=parent;
@@ -49,11 +49,11 @@ Server::~Server()
     delete&p;
 }
 
-Server *Server::createServer(QObject*parent, ActuatorInterfaceItem *actuatorInterface, const QByteArray &hostName, const QByteArray &passWord, const QByteArray &portNumber)
+Server *Server::createServer(QObject*parent, ActuatorInterfaceItem *ActuatorInterface, const QByteArray &hostName, const QByteArray &passWord, const QByteArray &portNumber)
 {
     auto server=new Server(parent);
     auto p =static_cast<ServerPvt*>(server->p);
-    p->actuatorInterface=actuatorInterface;
+    p->ActuatorInterface=ActuatorInterface;
     p->hostName=hostName;
     p->passWord=passWord;
     p->portNumber=portNumber;
@@ -134,15 +134,15 @@ Server &Server::setPortNumber(const QByteArray &value)
 ActuatorInterface *Server::createActuator(const QByteArray &dataGroup)
 {
     dPvt();
-    auto interface=p.actuatorInterface->newObject<ActuatorInterface>(this, dataGroup);
+    auto interface=p.ActuatorInterface->newObject<ActuatorInterface>(this, dataGroup);
 
     if(interface==nullptr){
-        qWarning()<<QStringLiteral("invalid interface to metaObject: ")+p.actuatorInterface->metaObject.className();
+        qWarning()<<QStringLiteral("invalid interface to metaObject: ")+p.ActuatorInterface->metaObject.className();
         return nullptr;
     }
 
-    if(interface->metaObject()->className()!=p.actuatorInterface->metaObject.className()){
-        qWarning()<<QStringLiteral("incompatible interface(%1) vs metaObject(%2)").arg(interface->metaObject()->className(), p.actuatorInterface->metaObject.className());
+    if(interface->metaObject()->className()!=p.ActuatorInterface->metaObject.className()){
+        qWarning()<<QStringLiteral("incompatible interface(%1) vs metaObject(%2)").arg(interface->metaObject()->className(), p.ActuatorInterface->metaObject.className());
         return nullptr;
     }
     return interface;

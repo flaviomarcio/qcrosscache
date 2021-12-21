@@ -17,12 +17,14 @@ namespace QCrossCache {
 class SDKGoogleTest : public testing::Test{
 public:
 
-    explicit SDKGoogleTest(){
+    explicit SDKGoogleTest()
+    {
         this->clear();
         QLocale::setDefault(QLocale(QLocale::Portuguese, QLocale::Brazil));
     }
 
-    virtual bool clear(){
+    virtual bool clear()
+    {
         return true;
     }
 

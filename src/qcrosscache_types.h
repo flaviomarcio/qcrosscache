@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QMutex>
 #include <QHash>
 #include "./qcrosscache_global.h"
 
@@ -9,17 +10,6 @@ namespace QCrossCache {
 
 class Server;
 class ActuatorInterface;
-
-//!
-//! \brief PoolCacheResponse
-//!
-typedef std::function<void*(const QByteArray&data)> PoolCacheResponseData;
-
-//!
-//! \brief PoolCacheResponseKeys
-//!
-typedef std::function<void*(QList<QByteArray>)> PoolCacheResponseKeys;
-
 
 enum Service{
     Local=0, Memcached=1

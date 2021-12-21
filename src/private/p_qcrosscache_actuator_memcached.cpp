@@ -70,6 +70,11 @@ bool ActuatorMemcached::isConnected()
     return false;
 }
 
+bool ActuatorMemcached::clear()
+{
+    return false;
+}
+
 bool ActuatorMemcached::exists(const QByteArray &key)
 {
     dPvt();
@@ -81,19 +86,19 @@ bool ActuatorMemcached::exists(const QByteArray &key)
     return false;
 }
 
-bool ActuatorMemcached::put(const QByteArray &key, const QByteArray &data)
+bool ActuatorMemcached::put(const QByteArray &key, const QByteArray &data, const quint64 expiration)
 {
     dPvt();
     auto ckey = key.toStdString();
     auto cvalue = data.toStdString();
     auto cgroup_key=this->dataGroup().toStdString();
-    p.rc = memcached_set_by_key(p.memc, cgroup_key.c_str(), cgroup_key.length(), ckey.c_str(), key.length(), cvalue.c_str(), data.length(), 0/*expire_time*/, 0/*flag*/);
+    p.rc = memcached_set_by_key(p.memc, cgroup_key.c_str(), cgroup_key.length(), ckey.c_str(), key.length(), cvalue.c_str(), data.length(), expiration, 0/*flag*/);
     if(p.rc==MEMCACHED_SUCCESS)
         return true;
     return false;
 }
 
-bool ActuatorMemcached::get(const QByteArray &key, QByteArray &data)
+QByteArray ActuatorMemcached::get(const QByteArray &key)
 {
     dPvt();
     auto ckey = key.toStdString();
@@ -101,12 +106,11 @@ bool ActuatorMemcached::get(const QByteArray &key, QByteArray &data)
     auto cgroup_key=this->dataGroup().toStdString();
     char *result = memcached_get_by_key(p.memc, cgroup_key.c_str(), cgroup_key.length(), ckey.c_str(), ckey.length(), 0/*value_length*/, 0/*flags*/, &rc);
     if(rc!=MEMCACHED_SUCCESS)
-        return true;
-    data = result;
-    return true;
+        return "";
+    return result;
 }
 
-bool ActuatorMemcached::take(const QByteArray &key, QByteArray &data)
+QByteArray ActuatorMemcached::take(const QByteArray &key)
 {
     dPvt();
     auto ckey = key.toStdString();
@@ -114,13 +118,13 @@ bool ActuatorMemcached::take(const QByteArray &key, QByteArray &data)
     auto cgroup_key=this->dataGroup().toStdString();
     char *result = memcached_get_by_key(p.memc, cgroup_key.c_str(), cgroup_key.length(), ckey.c_str(), ckey.length(), 0/*value_length*/, 0/*flags*/, &rc);
     if(rc!=MEMCACHED_SUCCESS)
-        return false;
+        return "";
 
-    data = result;
+
     rc = memcached_delete_by_key(p.memc, cgroup_key.c_str(), cgroup_key.length(), ckey.c_str(), ckey.length(), 0/*value_length*/);
     if(rc==MEMCACHED_SUCCESS)
-        return true;
-    return false;
+        return "";
+    return result;
 }
 
 bool ActuatorMemcached::remove(const QByteArray &key)

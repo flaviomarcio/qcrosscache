@@ -24,7 +24,7 @@ public:
     //! \param server
     //! \param dataGroup
     //!
-    Q_INVOKABLE explicit ActuatorMemcached(Server *server, const QByteArray &dataGroup);
+    explicit ActuatorMemcached(Server *server, const QByteArray &dataGroup);
 
     //!
     //!
@@ -49,6 +49,12 @@ public:
     virtual bool isConnected();
 
     //!
+    //! \brief clear
+    //! \return
+    //!
+    virtual bool clear();
+
+    //!
     //! \brief exists
     //! \param key
     //! \return
@@ -61,7 +67,7 @@ public:
     //! \param data
     //! \return
     //!
-    Q_INVOKABLE virtual bool put(const QByteArray&key, const QByteArray &data);
+    virtual bool put(const QByteArray&key, const QByteArray &data, const quint64 expiration);
 
     //!
     //! \brief get
@@ -69,7 +75,7 @@ public:
     //! \param data
     //! \return
     //!
-    Q_INVOKABLE virtual bool get(const QByteArray&key, QByteArray &data);
+    virtual QByteArray get(const QByteArray&key);
 
     //!
     //! \brief get
@@ -77,14 +83,14 @@ public:
     //! \param data
     //! \return
     //!
-    Q_INVOKABLE virtual bool take(const QByteArray&key, QByteArray&data);
+    virtual QByteArray take(const QByteArray&key);
 
     //!
     //! \brief remove
     //! \param key
     //! \return
     //!
-    Q_INVOKABLE virtual bool remove(const QByteArray&key);
+    virtual bool remove(const QByteArray&key);
 
 private:
     void*p=nullptr;

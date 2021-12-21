@@ -1,7 +1,4 @@
 TARGET = QCrossCache
 TEMPLATE = lib
 
-HEADERS += \
-	$$PWD/include/QCrossCache
-	
-include($$PWD/src/qcrosscache.pri)
+include($$PWD/qcrosscache.pri)

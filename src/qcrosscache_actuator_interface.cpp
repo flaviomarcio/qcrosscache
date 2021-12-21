@@ -69,31 +69,35 @@ bool ActuatorInterface::isConnected()
     return false;
 }
 
+bool ActuatorInterface::clear()
+{
+    return false;
+}
+
 bool ActuatorInterface::exists(const QByteArray &key)
 {
     Q_UNUSED(key)
     return false;
 }
 
-bool ActuatorInterface::put(const QByteArray &key, const QByteArray &data)
+bool ActuatorInterface::put(const QByteArray &key, const QByteArray &data, const quint64 expiration)
 {
     Q_UNUSED(key)
     Q_UNUSED(data)
+    Q_UNUSED(expiration)
     return false;
 }
 
-bool ActuatorInterface::get(const QByteArray &key, QByteArray &data)
+QByteArray ActuatorInterface::get(const QByteArray &key)
 {
     Q_UNUSED(key)
-    Q_UNUSED(data)
-    return false;
+    return {};
 }
 
-bool ActuatorInterface::take(const QByteArray &key, QByteArray &data)
+QByteArray ActuatorInterface::take(const QByteArray &key)
 {
     Q_UNUSED(key)
-    Q_UNUSED(data)
-    return false;
+    return {};
 }
 
 bool ActuatorInterface::remove(const QByteArray &key)
@@ -102,18 +106,16 @@ bool ActuatorInterface::remove(const QByteArray &key)
     return false;
 }
 
-bool ActuatorInterface::list(const QByteArray &key, QVector<QByteArray> &listKeys)
+QVector<QByteArray> ActuatorInterface::list(const QByteArray &key)
 {
     Q_UNUSED(key)
-    Q_UNUSED(listKeys)
-    return false;
+    return {};
 }
 
-bool ActuatorInterface::listKeys(const QByteArray &key, QVector<QByteArray> &listKeys)
+QVector<QByteArray> ActuatorInterface::listKeys(const QByteArray &key)
 {
     Q_UNUSED(key)
-    Q_UNUSED(listKeys)
-    return false;
+    return {};
 }
 
 }

@@ -80,14 +80,14 @@ Server *ActuatorManager::createServer(const QByteArray &service, const QByteArra
 {
     dPvt();
 
-    ActuatorInterfaceItem *actuatorInterface=p.interfaceCollection.value(service.toLower());
+    ActuatorInterfaceItem *ActuatorInterface=p.interfaceCollection.value(service.toLower());
 
-    if(actuatorInterface==nullptr){
+    if(ActuatorInterface==nullptr){
         qWarning()<<"invalid interface";
         return nullptr;
     }
 
-    auto server=Server::createServer(this, actuatorInterface, hostName, passWord, portNumber);
+    auto server=Server::createServer(this, ActuatorInterface, hostName, passWord, portNumber);
 
     auto serverUuid=server->uuid().toByteArray();
     if(p.servers.contains(serverUuid)){

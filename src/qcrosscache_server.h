@@ -47,7 +47,7 @@ public:
     //! \param dataGroup
     //! \return
     //!
-    static Server*createServer(QObject *parent, ActuatorInterfaceItem*actuatorInterface, const QByteArray&hostName, const QByteArray&passWord, const QByteArray&portNumber);
+    static Server*createServer(QObject *parent, ActuatorInterfaceItem*ActuatorInterface, const QByteArray&hostName, const QByteArray&passWord, const QByteArray&portNumber);
 
     //!
     //! \brief uuid

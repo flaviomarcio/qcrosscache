@@ -2,11 +2,13 @@
 #define Q_CROSSCACHE_InterfaceLocal_H
 
 #include "./qcrosscache_test_unit.h"
+#include <QCrossCache>
 
 namespace QCrossCache {
 
 class Q_CROSSCACHE_InterfaceLocal : public SDKGoogleTestUnit {
 public:
+    //Pool ActuatorInterface;
 };
 
 TEST_F(Q_CROSSCACHE_InterfaceLocal, serviceStart)
@@ -16,6 +18,7 @@ TEST_F(Q_CROSSCACHE_InterfaceLocal, serviceStart)
 
 TEST_F(Q_CROSSCACHE_InterfaceLocal, put)
 {
+    //ActuatorInterface.cachePut()
 
 }
 

@@ -26,11 +26,17 @@ public:
     //! \param session
     //! \param dataGroup
     //!
-    Q_INVOKABLE explicit ActuatorLocal(Server *session, const QByteArray &dataGroup);
+    explicit ActuatorLocal(Server *session, const QByteArray &dataGroup);
 
     //!
     //!
     ~ActuatorLocal();
+
+    //!
+    //! \brief clear
+    //! \return
+    //!
+    virtual bool clear();
 
     //!
     //! \brief put
@@ -38,7 +44,7 @@ public:
     //! \param data
     //! \return
     //!
-    Q_INVOKABLE virtual bool put(const QByteArray&key, const QByteArray &data);
+    virtual bool put(const QByteArray&key, const QByteArray &data, const quint64 expiration);
 
     //!
     //! \brief get
@@ -46,7 +52,7 @@ public:
     //! \param data
     //! \return
     //!
-    Q_INVOKABLE virtual bool get(const QByteArray&key, QByteArray&data);
+    virtual QByteArray get(const QByteArray&key);
 
     //!
     //! \brief get
@@ -54,34 +60,30 @@ public:
     //! \param data
     //! \return
     //!
-    Q_INVOKABLE virtual bool take(const QByteArray&key, QByteArray&data);
+    virtual QByteArray take(const QByteArray&key);
 
     //!
     //! \brief remove
     //! \param key
     //! \return
     //!
-    Q_INVOKABLE virtual bool remove(const QByteArray&key);
+    virtual bool remove(const QByteArray&key);
 
     //!
     //! \brief list
     //! \param key
-    //! \param listKeys
     //! \return
     //!
-    Q_INVOKABLE virtual bool list(const QByteArray&key, QVector<QByteArray>&listKeys);
+    virtual QVector<QByteArray> list(const QByteArray&key);
 
     //!
     //! \brief listKeys
     //! \param key
-    //! \param listKeys
     //! \return
     //!
-    Q_INVOKABLE virtual bool listKeys(const QByteArray&key, QVector<QByteArray>&listKeys);
+    virtual QVector<QByteArray> listKeys(const QByteArray&key);
 private:
     void*p=nullptr;
-signals:
-    void requestCache(const QByteArray&dataGroup, const QByteArray&key, PoolCacheResponseData response);
 };
 
 Q_CROSSCACHE_REGISTER_INTERFACE(local, ActuatorLocal)
