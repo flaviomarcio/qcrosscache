@@ -9,12 +9,6 @@ class Q_CROSSCACHE_InterfaceMemcached : public SDKGoogleTestUnit {
 public:
 };
 
-TEST_F(Q_CROSSCACHE_InterfaceMemcached, serviceStart)
-{
-    EXPECT_EQ(this->serviceStart(),true)<<"fail: service start";
-}
-
-
 TEST_F(Q_CROSSCACHE_InterfaceMemcached, put)
 {
 
@@ -45,9 +39,9 @@ TEST_F(Q_CROSSCACHE_InterfaceMemcached, listKeys)
 
 }
 
-TEST_F(Q_CROSSCACHE_InterfaceMemcached, serviceStop)
+TEST_F(Q_CROSSCACHE_InterfaceMemcached, clear)
 {
-    EXPECT_EQ(this->serviceStop(),true)<<"fail: service stop";
+
 }
 
 }

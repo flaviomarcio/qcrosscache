@@ -40,7 +40,9 @@ ActuatorLocal::~ActuatorLocal()
 
 bool ActuatorLocal::clear()
 {
-    return false;
+    dPvt();
+    p.instance.cacheClear(this->dataGroup());
+    return true;
 }
 
 bool ActuatorLocal::put(const QByteArray &key, const QByteArray &data, const quint64 expiration)

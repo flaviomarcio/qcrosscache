@@ -19,25 +19,7 @@ public:
 
     explicit SDKGoogleTest()
     {
-        this->clear();
         QLocale::setDefault(QLocale(QLocale::Portuguese, QLocale::Brazil));
-    }
-
-    virtual bool clear()
-    {
-        return true;
-    }
-
-    virtual bool serviceStart(){
-        return this->clear();
-    }
-
-    virtual bool serviceStop(){
-        return this->clear();
-    }
-
-    virtual QStringList arguments(){
-        return qApp->arguments();
     }
 
     static QByteArray toMd5(const QVariant&v){
