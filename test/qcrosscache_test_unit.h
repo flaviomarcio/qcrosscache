@@ -22,7 +22,8 @@ public:
         QLocale::setDefault(QLocale(QLocale::Portuguese, QLocale::Brazil));
     }
 
-    static QByteArray toMd5(const QVariant&v){
+    static QByteArray toMd5(const QVariant&v)
+    {
         return QCryptographicHash::hash(v.toByteArray(), QCryptographicHash::Md5).toHex();
     }
 
@@ -54,7 +55,8 @@ public:
 class SDKGoogleTestUnit : public SDKGoogleTest{
 public:
 
-    explicit SDKGoogleTestUnit():SDKGoogleTest(){
+    explicit SDKGoogleTestUnit():SDKGoogleTest()
+    {
     }
 
 public:
