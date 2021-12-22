@@ -41,7 +41,10 @@ TEST_F(Q_CROSSCACHE_InterfaceLocal, take)
 
 TEST_F(Q_CROSSCACHE_InterfaceLocal, list)
 {
-
+    EXPECT_TRUE(client.put("key","teste"))<<"invalid put";
+    EXPECT_EQ(client.list("key").size(),1)<<"invalid put";
+    EXPECT_EQ(client.take("key"),"teste")<<"invalid put";
+    EXPECT_EQ(client.list("key").size(),0)<<"invalid put";
 }
 
 TEST_F(Q_CROSSCACHE_InterfaceLocal, listKeys)
