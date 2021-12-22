@@ -54,6 +54,13 @@ QByteArray &ActuatorInterface::dataGroup() const
     return p.dataGroup;
 }
 
+ActuatorInterface &ActuatorInterface::setDataGroup(const QByteArray &value)
+{
+    dPvt();
+    p.dataGroup=value;
+    return*this;
+}
+
 bool ActuatorInterface::connect()
 {
     return false;
@@ -112,9 +119,8 @@ QVector<QByteArray> ActuatorInterface::list(const QByteArray &key)
     return {};
 }
 
-QVector<QByteArray> ActuatorInterface::listKeys(const QByteArray &key)
+QVector<QByteArray> ActuatorInterface::listKeys()
 {
-    Q_UNUSED(key)
     return {};
 }
 

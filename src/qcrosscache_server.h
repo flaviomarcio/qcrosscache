@@ -5,6 +5,7 @@
 #include <QUuid>
 #include "./qcrosscache_global.h"
 #include "./qcrosscache_types.h"
+#include "./qcrosscache_client.h"
 
 namespace QCrossCache {
 class ActuatorInterface;
@@ -15,6 +16,7 @@ class ActuatorInterface;
 class Q_CROSSCACHE_EXPORT Server : public QObject
 {
     Q_OBJECT
+    friend class ActuatorManager;
 public:
 
     enum Service{
@@ -38,7 +40,7 @@ public:
     //!
     //!
     ~Server();
-
+private:
     //!
     //! \brief createServer
     //! \param hostName
@@ -48,6 +50,13 @@ public:
     //! \return
     //!
     static Server*createServer(QObject *parent, ActuatorInterfaceItem*ActuatorInterface, const QByteArray&hostName, const QByteArray&passWord, const QByteArray&portNumber);
+public:
+    //!
+    //! \brief createClient
+    //! \param dataGroup
+    //! \return
+    //!
+    virtual Client*createClient(const QByteArray &dataGroup=QByteArray());
 
     //!
     //! \brief uuid
@@ -103,12 +112,7 @@ public:
     //!
     virtual Server&setPortNumber(const QByteArray &value);
 
-    //!
-    //! \brief createActuator
-    //! \param dataGroup
-    //! \return
-    //!
-    virtual ActuatorInterface*createActuator(const QByteArray &dataGroup=QByteArray());
+
 
 private:
     void*p=nullptr;

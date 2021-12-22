@@ -90,6 +90,15 @@ public slots:
     //!
     QByteArray cacheGet(const QByteArray&dataGroup, const QByteArray&key);
 
+
+    //!
+    //! \brief cacheTake
+    //! \param dataGroup
+    //! \param key
+    //! \return
+    //!
+    QByteArray cacheTake(const QByteArray&dataGroup, const QByteArray&key);
+
     //!
     //! \brief cacheList
     //! \param dataGroup

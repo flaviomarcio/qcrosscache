@@ -9,8 +9,6 @@
 
 namespace QCrossCache {
 
-class CacheRequest;
-
 //!
 //! \brief The CacheRepository class
 //!
@@ -32,13 +30,13 @@ public:
     //! \brief run
     //!
     void run() override;
-signals:
-    void cacheGet(const QByteArray&key, CacheRequest*responseThread);
-    void cacheTake(const QByteArray&key, CacheRequest*responseThread);
-    void cachePut(const QByteArray&key, const QByteArray&data, const quint64 experiation);
+public slots:
+    void cacheGet(const QByteArray&key);
+    void cacheTake(const QByteArray&key);
+    void cachePut(const QByteArray&key, const QByteArray&data, const quint64 expiration);
     void cacheRemove(const QByteArray&key);
-    void cacheList(const QByteArray &key, CacheRequest*responseThread);
-    void cacheListKeys(CacheRequest*responseThread);
+    void cacheList(const QByteArray &key);
+    void cacheListKeys();
     void cacheClear();
 private:
     void*p=nullptr;

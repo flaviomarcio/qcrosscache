@@ -1,6 +1,7 @@
 #include "./qcrosscache_client.h"
 #include "./qcrosscache_server.h"
 #include "./qcrosscache_actuator_interface.h"
+#include "./private/p_qcrosscache_actuator_local.h"
 #include <QVariantList>
 #include <QVariantHash>
 
@@ -24,15 +25,26 @@ public:
 
     virtual ~ClientPvt()
     {
+        if(this->interface!=nullptr)
+            delete this->interface;
     }
 };
 
 Client::Client(QObject *parent):QObject(parent)
 {
-    this->p=new ClientPvt(this, nullptr);
+    auto acLocal=new ActuatorLocal(this);
+    this->p=new ClientPvt(this, acLocal);
 }
 
-Client::Client(QObject *parent, ActuatorInterface*interface) : QObject(parent)
+Client::Client(const QByteArray&dataGroup, QObject*parent):QObject(parent)
+{
+    Q_UNUSED(dataGroup);
+    auto acLocal=new ActuatorLocal(this);
+    acLocal->setDataGroup(dataGroup);
+    this->p=new ClientPvt(this, acLocal);
+}
+
+Client::Client(ActuatorInterface *interface, QObject*parent) : QObject(parent)
 {
     this->p=new ClientPvt(this, interface);
 }
@@ -51,11 +63,13 @@ Server *Client::server()
     return p.interface->server();
 }
 
-QByteArray Client::dataGroup() const
+QByteArray&Client::dataGroup() const
 {
     dPvt();
-    if(p.interface==nullptr)
-        return {};
+    if(p.interface==nullptr){
+        static QByteArray dataGroup;
+        return dataGroup;
+    }
     return p.interface->dataGroup();
 }
 
@@ -139,12 +153,12 @@ QVector<QByteArray> Client::list(const QByteArray &key)
     return p.interface->list(key);
 }
 
-QVector<QByteArray> Client::listKeys(const QByteArray &key)
+QVector<QByteArray> Client::listKeys()
 {
     dPvt();
     if(p.interface==nullptr)
         return {};
-    return p.interface->listKeys(key);
+    return p.interface->listKeys();
 }
 
 }

@@ -26,9 +26,15 @@ public:
     //!
     //! \brief Client
     //! \param parent
+    //!
+    Q_INVOKABLE explicit Client(const QByteArray&dataGroup, QObject*parent=nullptr);
+
+    //!
+    //! \brief Client
+    //! \param parent
     //! \param interface
     //!
-    explicit Client(QObject*parent, ActuatorInterface *interface);
+    explicit Client(ActuatorInterface *interface, QObject*parent=nullptr);
 
     //!
     //!
@@ -44,7 +50,7 @@ public:
     //! \brief dataGroup
     //! \return
     //!
-    virtual QByteArray dataGroup()const;
+    virtual QByteArray &dataGroup()const;
 
     //!
     //! \brief connect
@@ -84,7 +90,7 @@ public:
     //! \param expiration
     //! \return
     //!
-    virtual bool put(const QByteArray&key, const QByteArray&data, const quint64 expiration);
+    virtual bool put(const QByteArray&key, const QByteArray&data, const quint64 expiration=0);
 
     //!
     //! \brief get
@@ -118,10 +124,9 @@ public:
 
     //!
     //! \brief listKeys
-    //! \param key
     //! \return
     //!
-    virtual QVector<QByteArray> listKeys(const QByteArray&key);
+    virtual QVector<QByteArray> listKeys();
 
 private:
     void*p=nullptr;

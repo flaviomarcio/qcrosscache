@@ -50,32 +50,38 @@ QVector<QByteArray> PoolPvt::cacheGroups()
 
 void PoolPvt::cacheClearAll()
 {
-    for(auto&thread:this->hashRepository)
-        emit thread->cacheClear();
+    auto dataGroupList=this->hashRepository.keys();
+    for(auto&dataGroup:dataGroupList){
+        auto request=this->cacheRequest(dataGroup);
+        if(request==nullptr)
+            return;
+        emit request->cacheClear();
+        request->wait();
+    }
 }
 
 void PoolPvt::cacheClear(const QByteArray &dataGroup)
 {
-    auto repository=this->cacheRepository(dataGroup);
-    if(repository==nullptr)
+    auto request=this->cacheRequest(dataGroup);
+    if(request==nullptr)
         return;
-    emit repository->cacheClear();
+    emit request->cacheClear();
 }
 
 void PoolPvt::cachePut(const QByteArray &dataGroup, const QByteArray &key, const QByteArray &data, const quint64 expiration)
 {
-    auto repository=this->cacheRepository(dataGroup);
-    if(repository==nullptr)
+    auto request=this->cacheRequest(dataGroup);
+    if(request==nullptr)
         return;
-    emit repository->cachePut(key, data, expiration);
+    emit request->cachePut(key, data, expiration);
 }
 
 void PoolPvt::cacheRemove(const QByteArray &dataGroup, const QByteArray &key)
 {
-    auto repository=this->cacheRepository(dataGroup);
-    if(repository==nullptr)
+    auto request=this->cacheRequest(dataGroup);
+    if(request==nullptr)
         return;
-    emit repository->cacheRemove(key);
+    emit request->cacheRemove(key);
 }
 
 const QByteArray PoolPvt::cacheGet(const QByteArray &dataGroup, const QByteArray &key)
@@ -125,7 +131,7 @@ CacheRepository *PoolPvt::cacheRepository(const QByteArray &dataGroup)
     if(repository==nullptr){
         repository=new CacheRepository();
         repository->start();
-        while(repository->eventDispatcher())
+        while(repository->eventDispatcher()==nullptr)
             QThread::msleep(1);
         this->hashRepository.insert(dataGroup.toLower(),repository);
     }
@@ -143,7 +149,7 @@ CacheRequest *PoolPvt::cacheRequest(const QByteArray &dataGroup)
     return&thread->start(repository);
 }
 
-void PoolPvt::onRequestFineshed(CacheRequest *request)
+void PoolPvt::onrequestFinished(CacheRequest *request)
 {
     request->quit();
     request->wait();

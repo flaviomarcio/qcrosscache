@@ -55,7 +55,7 @@ private:
 
     CacheRequest*cacheRequest(const QByteArray&dataGroup);
 private slots:
-    void onRequestFineshed(CacheRequest*request);
+    void onrequestFinished(CacheRequest*request);
 };
 
 }

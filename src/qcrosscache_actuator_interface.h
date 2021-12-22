@@ -45,6 +45,7 @@ public:
     //! \return
     //!
     virtual QByteArray &dataGroup()const;
+    virtual ActuatorInterface&setDataGroup(const QByteArray&value);
 
     //!
     //! \brief connect
@@ -118,11 +119,9 @@ public:
 
     //!
     //! \brief listKeys
-    //! \param key
-    //! \param listKeys
     //! \return
     //!
-    virtual QVector<QByteArray> listKeys(const QByteArray&key);
+    virtual QVector<QByteArray> listKeys();
 
 private:
     void*p=nullptr;

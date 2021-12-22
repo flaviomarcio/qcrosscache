@@ -97,6 +97,12 @@ QByteArray Pool::cacheGet(const QByteArray &dataGroup, const QByteArray &key)
     return p.cacheGet(dataGroup, key);
 }
 
+QByteArray Pool::cacheTake(const QByteArray &dataGroup, const QByteArray &key)
+{
+    dPvt();
+    return p.cacheTake(dataGroup, key);
+}
+
 QVector<QByteArray> Pool::cacheList(const QByteArray &dataGroup, const QByteArray&key)
 {
     dPvt();

@@ -81,7 +81,7 @@ public:
     //! \param key
     //! \return
     //!
-    virtual QVector<QByteArray> listKeys(const QByteArray&key);
+    virtual QVector<QByteArray> listKeys();
 private:
     void*p=nullptr;
 };

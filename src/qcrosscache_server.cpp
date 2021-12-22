@@ -61,6 +61,26 @@ Server *Server::createServer(QObject*parent, ActuatorInterfaceItem *ActuatorInte
     return server;
 }
 
+Client *Server::createClient(const QByteArray &dataGroup)
+{
+    dPvt();
+    auto interface=p.ActuatorInterface->newObject<ActuatorInterface>(this, dataGroup);
+
+    if(interface==nullptr){
+        qWarning()<<QStringLiteral("invalid interface to metaObject: ")+p.ActuatorInterface->metaObject.className();
+        return nullptr;
+    }
+
+    if(interface->metaObject()->className()!=p.ActuatorInterface->metaObject.className()){
+        qWarning()<<QStringLiteral("incompatible interface(%1) vs metaObject(%2)").arg(interface->metaObject()->className(), p.ActuatorInterface->metaObject.className());
+        return nullptr;
+    }
+    if(!dataGroup.isEmpty())
+        interface->setDataGroup(dataGroup);
+    auto client=new Client(interface, this);
+    return client;
+}
+
 const QUuid &Server::uuid()
 {
     dPvt();
@@ -129,23 +149,6 @@ Server &Server::setPortNumber(const QByteArray &value)
     p.portNumber = value;
     emit portNumberChanged();
     return p.makeData();
-}
-
-ActuatorInterface *Server::createActuator(const QByteArray &dataGroup)
-{
-    dPvt();
-    auto interface=p.ActuatorInterface->newObject<ActuatorInterface>(this, dataGroup);
-
-    if(interface==nullptr){
-        qWarning()<<QStringLiteral("invalid interface to metaObject: ")+p.ActuatorInterface->metaObject.className();
-        return nullptr;
-    }
-
-    if(interface->metaObject()->className()!=p.ActuatorInterface->metaObject.className()){
-        qWarning()<<QStringLiteral("incompatible interface(%1) vs metaObject(%2)").arg(interface->metaObject()->className(), p.ActuatorInterface->metaObject.className());
-        return nullptr;
-    }
-    return interface;
 }
 
 }

@@ -51,25 +51,38 @@ private:
     QVector<QByteArray> list;
     CacheRepository*repository=nullptr;
 signals:
-    void requestFineshed(CacheRequest*request);
-    void responseData(const QByteArray&data);
-    void responseList(const QVector<QByteArray>&list);
+    void requestFinished(CacheRequest*request);
+
+    void cacheClear();
     void cacheGet(const QByteArray&key);
-    void cacheTake(const QByteArray&key);
     void cacheList(const QByteArray &key);
     void cacheListKeys();
+    void cachePut(const QByteArray&key, const QByteArray&data, const quint64 expiration);
+    void cacheRemove(const QByteArray&key);
+    void cacheTake(const QByteArray&key);
+
+    void responseData(const QByteArray&data);
+    void responseList(const QVector<QByteArray>&list);
+
+
+    void repositoryCacheClear();
+    void repositoryCacheGet(const QByteArray&key);
+    void repositoryCacheList(const QByteArray &key);
+    void repositoryCacheListKeys();
+    void repositoryCachePut(const QByteArray&key, const QByteArray&data, const quint64 expiration);
+    void repositoryCacheRemove(const QByteArray&key);
+    void repositoryCacheTake(const QByteArray&key);
+
 private slots:
 
-    void onResponseData(const QByteArray&data);
-
-    void onResponseList(const QVector<QByteArray>&list);
-
+    void onCacheClear();
     void onCacheGet(const QByteArray&key);
-
-    void onCacheTake(const QByteArray&key);
-
     void onCacheList(const QByteArray &key);
-
     void onCacheListKeys();
+    void onCachePut(const QByteArray&key, const QByteArray&data, const quint64 expiration);
+    void onCacheRemove(const QByteArray&key);
+    void onCacheTake(const QByteArray&key);
+    void onResponseData(const QByteArray&data);
+    void onResponseList(const QVector<QByteArray>&list);
 };
 }
