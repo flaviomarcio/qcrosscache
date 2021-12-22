@@ -40,7 +40,7 @@ TEST_F(Q_CROSSCACHE_InterfaceMemcached, list)
 
 }
 
-TEST_F(Q_CROSSCACHE_InterfaceMemcached, listKey)
+TEST_F(Q_CROSSCACHE_InterfaceMemcached, listKeys)
 {
 
 }
