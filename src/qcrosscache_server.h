@@ -112,6 +112,13 @@ public:
     //!
     virtual Server&setPortNumber(const QByteArray &value);
 
+    //!
+    //! \brief setPortNumber
+    //! \param value
+    //! \return
+    //!
+    virtual Server&setPortNumber(const qlonglong &value);
+
 
 
 private:

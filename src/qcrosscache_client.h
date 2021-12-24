@@ -27,7 +27,7 @@ public:
     //! \brief Client
     //! \param parent
     //!
-    Q_INVOKABLE explicit Client(const QByteArray&dataGroup, QObject*parent=nullptr);
+    explicit Client(const QByteArray&dataGroup, QObject*parent=nullptr);
 
     //!
     //! \brief Client
@@ -35,6 +35,25 @@ public:
     //! \param interface
     //!
     explicit Client(ActuatorInterface *interface, QObject*parent=nullptr);
+
+
+    //!
+    //! \brief clientForLocal
+    //! \return
+    //!
+    static Client*clientForLocal(QObject*parent=nullptr);
+
+    //!
+    //! \brief clientForLocalSocket
+    //! \return
+    //!
+    static Client*clientForLocalSocket(QObject*parent=nullptr);
+
+    //!
+    //! \brief clientForMemcached
+    //! \return
+    //!
+    static Client*clientForMemcached(QObject*parent=nullptr);
 
     //!
     //!
@@ -50,7 +69,7 @@ public:
     //! \brief dataGroup
     //! \return
     //!
-    virtual QByteArray &dataGroup()const;
+    virtual const QByteArray &dataGroup()const;
 
     //!
     //! \brief connect

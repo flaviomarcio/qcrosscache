@@ -52,7 +52,7 @@ Pool &Pool::stop()
     return*this;
 }
 
-bool Pool::started()
+bool Pool::isStarted()
 {
     dPvt();
     return p.isStarted();

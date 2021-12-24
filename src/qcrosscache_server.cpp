@@ -17,7 +17,7 @@ public:
     Server *parent=nullptr;
     QUuid uuid;
     QByteArray service;
-    QByteArray hostName;
+    QByteArray hostName=QByteArrayLiteral("localhost");
     QByteArray passWord;
     QByteArray portNumber;
     ActuatorInterfaceItem *ActuatorInterface=nullptr;
@@ -40,7 +40,7 @@ public:
 
 Server::Server(QObject *parent) : QObject(parent)
 {
-    this->p=new Server(parent);
+    this->p=new ServerPvt(this);
 }
 
 Server::~Server()
@@ -147,6 +147,16 @@ Server &Server::setPortNumber(const QByteArray &value)
     if (p.portNumber == value)
         return p.makeData();
     p.portNumber = value;
+    emit portNumberChanged();
+    return p.makeData();
+}
+
+Server &Server::setPortNumber(const qlonglong &value)
+{
+    dPvt();
+    if (p.portNumber.toLongLong() == value)
+        return p.makeData();
+    p.portNumber = QByteArray::number(value);
     emit portNumberChanged();
     return p.makeData();
 }

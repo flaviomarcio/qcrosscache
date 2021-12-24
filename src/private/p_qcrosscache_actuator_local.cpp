@@ -38,6 +38,17 @@ ActuatorLocal::~ActuatorLocal()
     delete&p;
 }
 
+bool ActuatorLocal::connect()
+{
+    dPvt();
+    return p.instance.isStarted();
+}
+
+bool ActuatorLocal::disconnect()
+{
+    return true;
+}
+
 bool ActuatorLocal::clear()
 {
     dPvt();

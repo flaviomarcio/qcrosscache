@@ -12,9 +12,10 @@ class ActuatorInterfacePvt{
 public:
     ActuatorInterface*parent=nullptr;
     Server*server=nullptr;
+    Server serverDefault;
     bool connected=false;
-    QByteArray dataGroup;
-    explicit ActuatorInterfacePvt(ActuatorInterface *parent, Server *server, const QByteArray &dataGroup)
+    QByteArray dataGroup=QByteArrayLiteral("default");
+    explicit ActuatorInterfacePvt(ActuatorInterface *parent, Server *server, const QByteArray &dataGroup):serverDefault(parent)
     {
         this->parent=parent;
         this->server=server;
@@ -45,12 +46,16 @@ ActuatorInterface::~ActuatorInterface()
 Server *ActuatorInterface::server()
 {
     dPvt();
-    return p.server;
+    if(p.server!=nullptr)
+        return p.server;
+    return&p.serverDefault;
 }
 
-QByteArray &ActuatorInterface::dataGroup() const
+const QByteArray &ActuatorInterface::dataGroup() const
 {
     dPvt();
+    if(p.dataGroup.isEmpty())
+        p.dataGroup=QByteArrayLiteral(".");
     return p.dataGroup;
 }
 

@@ -92,6 +92,20 @@ public:
     //!
     virtual bool remove(const QByteArray&key);
 
+    //!
+    //! \brief list
+    //! \param key
+    //! \return
+    //!
+    virtual QVector<QByteArray> list(const QByteArray&key);
+
+    //!
+    //! \brief listKeys
+    //! \param key
+    //! \return
+    //!
+    virtual QVector<QByteArray> listKeys();
+
 private:
     void*p=nullptr;
 signals:

@@ -33,6 +33,19 @@ public:
     ~ActuatorLocal();
 
     //!
+    //! \brief connect
+    //! \return
+    //!
+    virtual bool connect();
+
+    //!
+    //! \brief disconnect
+    //! \return
+    //!
+    virtual bool disconnect();
+
+
+    //!
     //! \brief clear
     //! \return
     //!

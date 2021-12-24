@@ -39,10 +39,10 @@ public:
     virtual Pool&stop();
 
     //!
-    //! \brief started
+    //! \brief isStarted
     //! \return
     //!
-    virtual bool started();
+    virtual bool isStarted();
 
     //!
     //! \brief instance

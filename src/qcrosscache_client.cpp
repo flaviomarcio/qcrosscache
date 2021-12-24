@@ -2,6 +2,7 @@
 #include "./qcrosscache_server.h"
 #include "./qcrosscache_actuator_interface.h"
 #include "./private/p_qcrosscache_actuator_local.h"
+#include "./private/p_qcrosscache_actuator_memcached.h"
 #include <QVariantList>
 #include <QVariantHash>
 
@@ -49,6 +50,25 @@ Client::Client(ActuatorInterface *interface, QObject*parent) : QObject(parent)
     this->p=new ClientPvt(this, interface);
 }
 
+Client *Client::clientForLocal(QObject *parent)
+{
+    auto client=new Client(parent);
+    return client;
+}
+
+Client *Client::clientForLocalSocket(QObject *parent)
+{
+    auto client=new Client(parent);
+    return client;
+}
+
+Client *Client::clientForMemcached(QObject *parent)
+{
+    auto client=new Client(new ActuatorMemcached(),parent);
+    client->server()->setPortNumber(11211);
+    return client;
+}
+
 Client::~Client()
 {
     dPvt();
@@ -63,7 +83,7 @@ Server *Client::server()
     return p.interface->server();
 }
 
-QByteArray&Client::dataGroup() const
+const QByteArray&Client::dataGroup() const
 {
     dPvt();
     if(p.interface==nullptr){

@@ -44,7 +44,7 @@ public:
     //! \brief dataGroup
     //! \return
     //!
-    virtual QByteArray &dataGroup()const;
+    virtual const QByteArray &dataGroup()const;
     virtual ActuatorInterface&setDataGroup(const QByteArray&value);
 
     //!
