@@ -3,6 +3,8 @@
 #include "./qcrosscache_actuator_interface.h"
 #include "./private/p_qcrosscache_actuator_local.h"
 #include "./private/p_qcrosscache_actuator_memcached.h"
+#include "./private/p_qcrosscache_actuator_mongodb.h"
+#include "./private/p_qcrosscache_actuator_redis.h"
 #include <QVariantList>
 #include <QVariantHash>
 
@@ -65,7 +67,18 @@ Client *Client::clientForLocalSocket(QObject *parent)
 Client *Client::clientForMemcached(QObject *parent)
 {
     auto client=new Client(new ActuatorMemcached(),parent);
-    client->server()->setPortNumber(11211);
+    return client;
+}
+
+Client *Client::clientForMongoDb(QObject *parent)
+{
+    auto client=new Client(new ActuatorMongoDb(),parent);
+    return client;
+}
+
+Client *Client::clientForRedis(QObject *parent)
+{
+    auto client=new Client(new ActuatorRedis(),parent);
     return client;
 }
 

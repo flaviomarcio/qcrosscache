@@ -56,6 +56,18 @@ public:
     static Client*clientForMemcached(QObject*parent=nullptr);
 
     //!
+    //! \brief clientForMongoDb
+    //! \return
+    //!
+    static Client*clientForMongoDb(QObject*parent=nullptr);
+
+    //!
+    //! \brief clientForRedis
+    //! \return
+    //!
+    static Client*clientForRedis(QObject*parent=nullptr);
+
+    //!
     //!
     ~Client();
 

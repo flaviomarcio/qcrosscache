@@ -19,4 +19,6 @@ HEADERS += \
 SOURCES += \
     $$PWD/main.cpp \
     $$PWD/qcrosscache_functional_interface_local.cpp \
-    $$PWD/qcrosscache_functional_interface_mencached.cpp
+    $$PWD/qcrosscache_functional_interface_mencached.cpp \
+    $$PWD/qcrosscache_functional_interface_mongodb.cpp \
+    $$PWD/qcrosscache_functional_interface_redis.cpp \

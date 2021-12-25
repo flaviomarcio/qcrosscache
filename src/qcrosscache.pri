@@ -1,6 +1,8 @@
 HEADERS += \
     $$PWD/private/p_qcrosscache_actuator_local.h \
     $$PWD/private/p_qcrosscache_actuator_memcached.h \
+    $$PWD/private/p_qcrosscache_actuator_redis.h \
+    $$PWD/private/p_qcrosscache_actuator_mongodb.h \
     $$PWD/private/p_qcrosscache_cache_repository.h \
     $$PWD/private/p_qcrosscache_cache_request.h \
     $$PWD/private/p_qcrosscache_pool.h \
@@ -16,6 +18,8 @@ HEADERS += \
 SOURCES += \
     $$PWD/private/p_qcrosscache_actuator_local.cpp \
     $$PWD/private/p_qcrosscache_actuator_memcached.cpp \
+    $$PWD/private/p_qcrosscache_actuator_redis.cpp \
+    $$PWD/private/p_qcrosscache_actuator_mongodb.cpp \
     $$PWD/private/p_qcrosscache_cache_repository.cpp \
     $$PWD/private/p_qcrosscache_cache_request.cpp \
     $$PWD/private/p_qcrosscache_pool.cpp \

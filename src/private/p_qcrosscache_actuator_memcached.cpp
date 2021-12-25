@@ -180,6 +180,7 @@ bool ActuatorMemcached::remove(const QByteArray &key)
 
 QVector<QByteArray> ActuatorMemcached::list(const QByteArray &key)
 {
+    //https://qastack.com.br/programming/19560150/get-all-keys-set-in-memcached
     Q_UNUSED(key);
     qWarning()<<tr("no implemented");
     return {};
@@ -187,6 +188,7 @@ QVector<QByteArray> ActuatorMemcached::list(const QByteArray &key)
 
 QVector<QByteArray> ActuatorMemcached::listKeys()
 {
+    //https://qastack.com.br/programming/19560150/get-all-keys-set-in-memcached
     qWarning()<<tr("no implemented");
     return {};
 }
