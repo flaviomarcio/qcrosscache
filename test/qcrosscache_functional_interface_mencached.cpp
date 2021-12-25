@@ -18,6 +18,14 @@ TEST_F(Q_CROSSCACHE_InterfaceMemcached, connect)
     EXPECT_TRUE(client->connect())<<"fail on connect";
 }
 
+TEST_F(Q_CROSSCACHE_InterfaceMemcached, clear)
+{
+    EXPECT_TRUE(client->put("key","teste"))<<"invalid put";
+    EXPECT_EQ(client->listKeys().size(),1)<<"invalid list";
+    EXPECT_TRUE(client->clear())<<"invalid clear";
+    EXPECT_EQ(client->listKeys().size(),0)<<"invalid list";
+}
+
 TEST_F(Q_CROSSCACHE_InterfaceMemcached, put)
 {
     EXPECT_TRUE(client->put("key","teste"))<<"invalid put";
@@ -43,27 +51,21 @@ TEST_F(Q_CROSSCACHE_InterfaceMemcached, take)
 
 TEST_F(Q_CROSSCACHE_InterfaceMemcached, list)
 {
-//    EXPECT_TRUE(client->put("key","teste"))<<"invalid put";
-//    EXPECT_EQ(client->list("key").size(),1)<<"invalid list";
-//    EXPECT_EQ(client->take("key"),"teste")<<"invalid take";
-//    EXPECT_EQ(client->list("key").size(),0)<<"invalid list";
+    EXPECT_TRUE(client->put("key","teste"))<<"invalid put";
+    EXPECT_EQ(client->list("key").size(),1)<<"invalid list";
+    EXPECT_EQ(client->take("key"),"teste")<<"invalid take";
+    EXPECT_EQ(client->list("key").size(),0)<<"invalid list";
 }
 
 TEST_F(Q_CROSSCACHE_InterfaceMemcached, listKeys)
 {
-//    EXPECT_TRUE(client->put("key","teste"))<<"invalid put";
-//    EXPECT_EQ(client->listKeys().size(),1)<<"invalid list";
-//    EXPECT_EQ(client->take("key"),"teste")<<"invalid take";
-//    EXPECT_EQ(client->listKeys().size(),0)<<"invalid list";
-}
-
-TEST_F(Q_CROSSCACHE_InterfaceMemcached, clear)
-{
     EXPECT_TRUE(client->put("key","teste"))<<"invalid put";
-    //EXPECT_EQ(client->listKeys().size(),1)<<"invalid list";
-    EXPECT_TRUE(client->clear())<<"invalid clear";
+    EXPECT_EQ(client->listKeys().size(),1)<<"invalid list";
+    EXPECT_EQ(client->take("key"),"teste")<<"invalid take";
     EXPECT_EQ(client->listKeys().size(),0)<<"invalid list";
 }
+
+
 
 TEST_F(Q_CROSSCACHE_InterfaceMemcached, disconnect)
 {

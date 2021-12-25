@@ -4,6 +4,7 @@
 #include "./p_qcrosscache_actuator_memcached.h"
 #include "../qcrosscache_server.h"
 #include <QDebug>
+#include <QTcpSocket>
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
@@ -63,11 +64,12 @@ bool ActuatorMemcached::connect()
     memcached_return rc;
     p.memc_st = memcached_create(nullptr);
 
+    auto hostName=this->server()->hostName();
     auto portNumber=this->server()->portNumber().toInt();
     if(portNumber<=0)
         portNumber=MEMCACHED_DEFAULT_PORT;
 
-    p.memc_server_st = memcached_server_list_append(nullptr, this->server()->hostName(), portNumber, &rc);
+    p.memc_server_st = memcached_server_list_append(nullptr, hostName, portNumber, &rc);
     rc = memcached_server_push(p.memc_st, p.memc_server_st);
     if(rc==MEMCACHED_SUCCESS){
         p.memc_connected=true;
@@ -180,17 +182,42 @@ bool ActuatorMemcached::remove(const QByteArray &key)
 
 QVector<QByteArray> ActuatorMemcached::list(const QByteArray &key)
 {
-    //https://qastack.com.br/programming/19560150/get-all-keys-set-in-memcached
-    Q_UNUSED(key);
-    qWarning()<<tr("no implemented");
-    return {};
+    QVector<QByteArray> __return;
+    auto hostName=this->server()->hostName();
+    auto portNumber=this->server()->portNumber().toInt();
+    if(portNumber<=0)
+        portNumber=MEMCACHED_DEFAULT_PORT;
+    auto thread=new ActuatorMemcachedRequest(hostName, portNumber, QByteArrayLiteral("lru_crawler metadump all"));
+    thread->start().wait();
+    for(auto&line:thread->responseBody()){
+        //lru_crawler metadump all
+        //    key=AAAA exp=-1 la=1640459601 cas=62 fetch=yes cls=1 size=69
+        //    key=BBBB exp=-1 la=1640459909 cas=63 fetch=no cls=1 size=67
+        //    key=CCCCC exp=-1 la=1640459912 cas=64 fetch=no cls=1 size=69
+        //    key=AAAX exp=-1 la=1640459916 cas=65 fetch=no cls=1 size=68
+        //    END
+        if(!line.startsWith(QByteArrayLiteral("key")))
+            continue;
+        auto column=line.split(' ');
+        if(column.isEmpty())
+            continue;
+        auto value=column.first().split('=').last();
+
+        if(value.isEmpty())
+            continue;
+
+        if(!key.isEmpty() && !value.startsWith(key))
+            continue;
+
+        __return<<value;
+    }
+    delete thread;
+    return __return;
 }
 
 QVector<QByteArray> ActuatorMemcached::listKeys()
 {
-    //https://qastack.com.br/programming/19560150/get-all-keys-set-in-memcached
-    qWarning()<<tr("no implemented");
-    return {};
+    return this->list(QByteArray());
 }
 
 } // namespace QCrossCache

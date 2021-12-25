@@ -25,6 +25,14 @@ TEST_F(Q_CROSSCACHE_InterfaceLocal, connect)
     EXPECT_TRUE(client->connect())<<"fail on connect";
 }
 
+TEST_F(Q_CROSSCACHE_InterfaceLocal, clear)
+{
+    EXPECT_TRUE(client->put("key","teste"))<<"invalid put";
+    EXPECT_EQ(client->listKeys().size(),1)<<"invalid list";
+    EXPECT_TRUE(client->clear())<<"invalid clear";
+    EXPECT_EQ(client->listKeys().size(),0)<<"invalid list";
+}
+
 TEST_F(Q_CROSSCACHE_InterfaceLocal, put)
 {
     EXPECT_TRUE(client->put("key","teste"))<<"invalid put";
@@ -50,9 +58,11 @@ TEST_F(Q_CROSSCACHE_InterfaceLocal, take)
 
 TEST_F(Q_CROSSCACHE_InterfaceLocal, list)
 {
-    EXPECT_TRUE(client->put("key","teste"))<<"invalid put";
-    EXPECT_EQ(client->list("key").size(),1)<<"invalid list";
-    EXPECT_EQ(client->take("key"),"teste")<<"invalid take";
+    EXPECT_TRUE(client->put("keyX","teste"))<<"invalid put";
+    EXPECT_TRUE(client->put("keyY","teste"))<<"invalid put";
+    EXPECT_EQ(client->list("key").size(),2)<<"invalid list";
+    EXPECT_EQ(client->take("keyX"),"teste")<<"invalid take";
+    EXPECT_EQ(client->take("keyY"),"teste")<<"invalid take";
     EXPECT_EQ(client->list("key").size(),0)<<"invalid list";
 }
 
@@ -61,14 +71,6 @@ TEST_F(Q_CROSSCACHE_InterfaceLocal, listKeys)
     EXPECT_TRUE(client->put("key","teste"))<<"invalid put";
     EXPECT_EQ(client->listKeys().size(),1)<<"invalid list";
     EXPECT_EQ(client->take("key"),"teste")<<"invalid take";
-    EXPECT_EQ(client->listKeys().size(),0)<<"invalid list";
-}
-
-TEST_F(Q_CROSSCACHE_InterfaceLocal, clear)
-{
-    EXPECT_TRUE(client->put("key","teste"))<<"invalid put";
-    EXPECT_EQ(client->listKeys().size(),1)<<"invalid list";
-    EXPECT_TRUE(client->clear())<<"invalid clear";
     EXPECT_EQ(client->listKeys().size(),0)<<"invalid list";
 }
 

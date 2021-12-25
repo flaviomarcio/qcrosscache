@@ -2,8 +2,129 @@
 
 #include "../qcrosscache_actuator_interface.h"
 #include "../qcrosscache_actuator_manager.h"
+#include "../qcrosscache_server.h"
+#include <QTcpSocket>
+#include <QThread>
+#include <QTimer>
 
 namespace QCrossCache {
+
+
+
+static const auto MEMCACHED_END_BLOCK=QByteArrayLiteral("END\r\n");
+
+//!
+//! \brief The ActuatorMemcachedRequest class
+//!
+class ActuatorMemcachedRequest : public QThread
+{
+    Q_OBJECT
+private:
+    QByteArray hostName;
+    int portNumber;
+    QByteArray reqBody;
+    QVector<QByteArray> resBody;
+    QTcpSocket*m_socket=nullptr;
+public:
+    //!
+    //! \brief ActuatorMemcachedRequest
+    //! \param actuator
+    //! \param command
+    //!
+    explicit ActuatorMemcachedRequest(const QByteArray&hostName, const int portNumber, const QByteArray&reqBody):QThread(nullptr)
+    {
+        this->moveToThread(this);
+        this->hostName=hostName;
+        this->portNumber=portNumber;
+        this->reqBody=reqBody;
+    }
+
+    //!
+    //!
+    ~ActuatorMemcachedRequest(){
+    }
+
+    QVector<QByteArray> responseBody()const
+    {
+        return this->resBody;
+    }
+
+
+    ActuatorMemcachedRequest&start()
+    {
+        QThread::start();
+        while(this->eventDispatcher()==nullptr)
+            QThread::msleep(1);
+        return*this;
+    }
+
+
+
+    //!
+    //! \brief run
+    //!
+    void run() override
+    {
+        if(m_socket!=nullptr)
+            delete m_socket;
+        m_socket = new QTcpSocket();
+        this->resBody.clear();
+        QTimer::singleShot(10, this, &ActuatorMemcachedRequest::call);
+        this->exec();
+        this->m_socket->close();
+        m_socket->deleteLater();
+        this->m_socket=nullptr;
+    }
+
+private slots:
+
+    //!
+    //! \brief call
+    //!
+    void call()
+    {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+        QObject::connect(m_socket, QOverload<QAbstractSocket::SocketError>::of(&QTcpSocket::errorOccurred), this, &ActuatorMemcachedRequest::onReplyError);
+#else
+        QObject::connect(m_socket, QOverload<QAbstractSocket::SocketError>::of(&QTcpSocket::error), this, &ActuatorMemcachedRequest::onReplyError);
+#endif
+        QObject::connect(m_socket, &QTcpSocket::connected, this, &ActuatorMemcachedRequest::onConnected);
+        m_socket->connectToHost(this->hostName, this->portNumber);
+    }
+
+    void onConnected()
+    {
+        if(!m_socket->waitForConnected()){
+            this->quit();
+            return;
+        }
+        m_socket->write(this->reqBody);
+        m_socket->write("\n");
+        m_socket->flush();
+        while(m_socket->waitForReadyRead()){
+            QByteArray line;
+            while(m_socket->canReadLine()){
+                line=m_socket->readLine();
+                if(line==MEMCACHED_END_BLOCK)
+                    break;
+                this->resBody<<line;
+            }
+            if(line==MEMCACHED_END_BLOCK)
+                break;
+        }
+        m_socket->disconnect();
+        m_socket->deleteLater();
+        this->quit();
+    };
+
+    void onReplyError(QAbstractSocket::SocketError e)
+    {
+        Q_UNUSED(e)
+//        if(e!=QAbstractSocket::SocketError::RemoteHostClosedError)
+//            this->onFinish();
+        this->quit();
+    };
+};
 
 //!
 //! \brief The ActuatorMemcached class
