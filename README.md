@@ -18,6 +18,20 @@ B --> BE(QCrossCache::ActuatorCustomise)--> BEA(YouServer)
 
 ## CMake Build information
 
+
+>```
+>## initial CMake parameters 
+>
+>-GNinja
+>-DCMAKE_BUILD_TYPE:STRING=Debug
+>-DCMAKE_PROJECT_INCLUDE_BEFORE:PATH=%{IDE:ResourcePath}/package-manager/auto-setup.cmake
+>-DQT_QMAKE_EXECUTABLE:STRING=%{Qt:qmakeExecutable}
+>-DCMAKE_PREFIX_PATH:STRING=%{Qt:QT_INSTALL_PREFIX}
+>-DCMAKE_C_COMPILER:STRING=%{Compiler:Executable:C}
+>-DCMAKE_CXX_COMPILER:STRING=%{Compiler:Executable:Cxx}
+>-DCMAKE_INSTALL_PREFIX=~/build/qcrosscache/install/Debug
+>```
+
 >```bash
 > cd qcrosscache
 > mkdir build;
