@@ -2,6 +2,7 @@
 //https://docs.mongodb.com/drivers/cxx/
 #include "./p_qcrosscache_actuator_mongodb.h"
 #include "../qcrosscache_server.h"
+#include <QDebug>
 
 namespace QCrossCache {
 

@@ -14,7 +14,7 @@ public:
 
 TEST_F(Q_CROSSCACHE_InterfaceMongoDb, connect)
 {
-    client=Client::clientForMongoDb();
+    client=QCrossCache::clientForMongoDb();
     EXPECT_TRUE(client->connect())<<"fail on connect";
 }
 

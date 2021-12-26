@@ -45,7 +45,7 @@ bool PoolPvt::isStarted()
 
 QVector<QByteArray> PoolPvt::cacheGroups()
 {
-    return this->hashRepository.keys();
+    return QVector<QByteArray>::fromList(this->hashRepository.keys());
 }
 
 void PoolPvt::cacheClearAll()

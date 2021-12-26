@@ -11,7 +11,7 @@ public:
     Client*client=nullptr;
     virtual void SetUp()
     {
-        client=Client::clientForLocal();
+        client=QCrossCache::clientForLocal();
     }
 
     virtual void TearDown()

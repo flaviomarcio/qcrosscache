@@ -1,10 +1,8 @@
 QT += core
 QT += network
-QT += websockets
 
 CONFIG += silent
 CONFIG += c++17
-CONFIG += silent
 
 #libmamcached
 LIBS += -lmemcached

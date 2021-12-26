@@ -13,7 +13,7 @@ public:
 
 TEST_F(Q_CROSSCACHE_InterfaceMemcached, connect)
 {
-    client=Client::clientForMemcached();
+    client=QCrossCache::clientForMemcached();
     EXPECT_TRUE(client->connect())<<"fail on connect";
 }
 

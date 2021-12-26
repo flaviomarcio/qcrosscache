@@ -1,6 +1,5 @@
 #include "./p_qcrosscache_cache_repository.h"
 #include "./p_qcrosscache_cache_request.h"
-#include <QDateTime>
 
 namespace QCrossCache {
 
@@ -108,7 +107,7 @@ void CacheRepository::cacheList(const QByteArray &key)
     auto threadResponse=dynamic_cast<CacheRequest*>(QObject::sender());
     if(threadResponse==nullptr)
         return;
-    QList<QByteArray> list;
+    QVector<QByteArray> list;
     QHashIterator<QByteArray, CacheItem> i(p.cacheCollection);
     while(i.hasNext()){
         i.next();
@@ -124,7 +123,7 @@ void CacheRepository::cacheListKeys()
     auto threadResponse=dynamic_cast<CacheRequest*>(QObject::sender());
     if(threadResponse==nullptr)
         return;
-    auto list=p.cacheCollection.keys();
+    auto list=QVector<QByteArray>::fromList(p.cacheCollection.keys());
     emit threadResponse->responseList(list);
 }
 

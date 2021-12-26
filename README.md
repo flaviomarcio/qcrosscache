@@ -1,7 +1,6 @@
-
 # QCrossCache
 
-Client to access cross-cache servers, used as a wrapper for memcached, mongodb, redis and direct access to localCache in raw memory.
+**Client to access cross-cache servers, used as a wrapper for memcached, mongodb, redis and direct access to localCache in raw memory.**
 
 
 ## Working architecture
@@ -17,8 +16,18 @@ B --> BD(QCrossCache::ActuatorRedis)--> BDA(Redis server)
 B --> BE(QCrossCache::ActuatorCustomise)--> BEA(YouServer)
 ```
 
+## CMake Build information
 
-## Build information
+>```bash
+> cd qcrosscache
+> mkdir build;
+> cd build;
+> cmake ..
+> make -j4;
+> make install;
+>```
+
+## QMake Build information
 
 >```bash
 > cd qcrosscache
@@ -28,11 +37,9 @@ B --> BE(QCrossCache::ActuatorCustomise)--> BEA(YouServer)
 > ls -l;
 >```
 
-
 ## Lib in you qmake application
 
 >Check example in ../example/localcache
-
 
 ## Source in you application
 
@@ -99,7 +106,7 @@ B --> BE(QCrossCache::ActuatorCustomise)--> BEA(YouServer)
 ## Example
 
 >```bash
-> cd qcrosscache\examples
+> cd qcrosscache/examples
 > ls -l;
 >```
 

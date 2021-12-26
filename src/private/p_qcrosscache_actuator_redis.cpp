@@ -2,6 +2,7 @@
 
 #include "./p_qcrosscache_actuator_redis.h"
 #include "../qcrosscache_server.h"
+#include <QDebug>
 
 namespace QCrossCache {
 

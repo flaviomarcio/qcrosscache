@@ -3,6 +3,10 @@
 #include <QObject>
 #include <QMutex>
 #include <QHash>
+#include <QList>
+#include <QVector>
+#include <QByteArray>
+#include <QDateTime>
 #include "./qcrosscache_global.h"
 
 

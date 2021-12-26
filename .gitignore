@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 
+# build dir
+./build
+./build*
 
 # Compiled Object files
 *.pro.user*

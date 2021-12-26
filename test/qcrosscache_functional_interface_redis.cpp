@@ -14,7 +14,7 @@ public:
 
 TEST_F(Q_CROSSCACHE_InterfaceRedis, connect)
 {
-    client=Client::clientForRedis();
+    client=QCrossCache::clientForRedis();
     EXPECT_TRUE(client->connect())<<"fail on connect";
 }
 

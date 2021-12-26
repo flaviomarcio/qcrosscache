@@ -20,7 +20,7 @@ static void init()
     qAddPostRoutine(deinit);
 }
 
-Q_COREAPP_STARTUP_FUNCTION(init);
+Q_COREAPP_STARTUP_FUNCTION(init)
 
 #define dPvt()\
 auto&p = *reinterpret_cast<PoolPvt*>(this->p)
