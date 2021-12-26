@@ -7,8 +7,8 @@ CONFIG += c++17
 #libmamcached
 LIBS += -lmemcached
 
-INCLUDEPATH += $$PWD/include
-INCLUDEPATH += $$PWD/src
+#INCLUDEPATH += $$PWD/include
+#INCLUDEPATH += $$PWD/src
 
 HEADERS += \
         $$PWD/include/QCrossCache
