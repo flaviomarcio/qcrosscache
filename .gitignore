@@ -5,7 +5,8 @@
 ./build
 ./build*
 
-# Compiled Object files
+# project user files
+*.txt.user*
 *.pro.user*
 
 # Compiled Object files
