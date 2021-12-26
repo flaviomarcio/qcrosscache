@@ -1,4 +1,4 @@
-TARGET = QCrossCache
+TARGET = qcrosscache
 TEMPLATE = lib
 
 include($$PWD/qcrosscache.pri)

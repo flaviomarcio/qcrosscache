@@ -189,6 +189,7 @@ QVector<QByteArray> ActuatorMemcached::list(const QByteArray &key)
         portNumber=MEMCACHED_DEFAULT_PORT;
     auto thread=new ActuatorMemcachedRequest(hostName, portNumber, QByteArrayLiteral("lru_crawler metadump all"));
     thread->start().wait();
+
     for(auto&line:thread->responseBody()){
         //lru_crawler metadump all
         //    key=AAAA exp=-1 la=1640459601 cas=62 fetch=yes cls=1 size=69

@@ -1,3 +1,5 @@
+//https://github.com/tdv/redis-cpp
+
 #include "./p_qcrosscache_actuator_redis.h"
 #include "../qcrosscache_server.h"
 
@@ -15,6 +17,11 @@ public:
     }
     virtual ~ActuatorRedisPvt()
     {
+        this->disconnect();
+    }
+    bool disconnect()
+    {
+        return true;
     }
 };
 
@@ -32,7 +39,6 @@ ActuatorRedis::ActuatorRedis(Server *server, const QByteArray &dataGroup) : Actu
 ActuatorRedis::~ActuatorRedis()
 {
     dPvt();
-    this->disconnect();
     delete&p;
 }
 
@@ -43,7 +49,8 @@ bool ActuatorRedis::connect()
 
 bool ActuatorRedis::disconnect()
 {
-    return true;
+    dPvt();
+    return p.disconnect();
 }
 
 bool ActuatorRedis::isConnected()

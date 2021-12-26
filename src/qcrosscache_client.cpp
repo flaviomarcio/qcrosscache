@@ -52,36 +52,6 @@ Client::Client(ActuatorInterface *interface, QObject*parent) : QObject(parent)
     this->p=new ClientPvt(this, interface);
 }
 
-Client *Client::clientForLocal(QObject *parent)
-{
-    auto client=new Client(parent);
-    return client;
-}
-
-Client *Client::clientForLocalSocket(QObject *parent)
-{
-    auto client=new Client(parent);
-    return client;
-}
-
-Client *Client::clientForMemcached(QObject *parent)
-{
-    auto client=new Client(new ActuatorMemcached(),parent);
-    return client;
-}
-
-Client *Client::clientForMongoDb(QObject *parent)
-{
-    auto client=new Client(new ActuatorMongoDb(),parent);
-    return client;
-}
-
-Client *Client::clientForRedis(QObject *parent)
-{
-    auto client=new Client(new ActuatorRedis(),parent);
-    return client;
-}
-
 Client::~Client()
 {
     dPvt();
@@ -192,6 +162,31 @@ QVector<QByteArray> Client::listKeys()
     if(p.interface==nullptr)
         return {};
     return p.interface->listKeys();
+}
+
+
+Client *clientForLocal(QObject *parent)
+{
+    auto client=new Client(parent);
+    return client;
+}
+
+Client *clientForMemcached(QObject *parent)
+{
+    auto client=new Client(new ActuatorMemcached(),parent);
+    return client;
+}
+
+Client *clientForMongoDb(QObject *parent)
+{
+    auto client=new Client(new ActuatorMongoDb(),parent);
+    return client;
+}
+
+Client *clientForRedis(QObject *parent)
+{
+    auto client=new Client(new ActuatorRedis(),parent);
+    return client;
 }
 
 }

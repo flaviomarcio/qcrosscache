@@ -1,5 +1,4 @@
-#ifndef Q_CROSSCACHE_InterfaceMemcached_H
-#define Q_CROSSCACHE_InterfaceMemcached_H
+#pragma once
 
 #include "./qcrosscache_test_unit.h"
 #include <QCrossCache>
@@ -65,8 +64,6 @@ TEST_F(Q_CROSSCACHE_InterfaceMemcached, listKeys)
     EXPECT_EQ(client->listKeys().size(),0)<<"invalid list";
 }
 
-
-
 TEST_F(Q_CROSSCACHE_InterfaceMemcached, disconnect)
 {
     EXPECT_TRUE(client->disconnect())<<"fail on connect";
@@ -74,6 +71,3 @@ TEST_F(Q_CROSSCACHE_InterfaceMemcached, disconnect)
 }
 
 }
-
-
-#endif

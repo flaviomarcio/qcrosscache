@@ -5,11 +5,12 @@ QT += websockets
 CONFIG += silent
 CONFIG += c++17
 CONFIG += silent
-CONFIG -=qtquickcompiler
 
 #libmamcached
 LIBS += -lmemcached
+
 INCLUDEPATH += $$PWD/include
+INCLUDEPATH += $$PWD/src
 
 HEADERS += \
         $$PWD/include/QCrossCache

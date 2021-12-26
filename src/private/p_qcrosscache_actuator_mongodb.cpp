@@ -1,3 +1,5 @@
+//http://mongocxx.org/
+//https://docs.mongodb.com/drivers/cxx/
 #include "./p_qcrosscache_actuator_mongodb.h"
 #include "../qcrosscache_server.h"
 
@@ -15,6 +17,11 @@ public:
     }
     virtual ~ActuatorMongoDbPvt()
     {
+        this->disconnect();
+    }
+    bool disconnect()
+    {
+        return true;
     }
 };
 
@@ -32,7 +39,6 @@ ActuatorMongoDb::ActuatorMongoDb(Server *server, const QByteArray &dataGroup) : 
 ActuatorMongoDb::~ActuatorMongoDb()
 {
     dPvt();
-    this->disconnect();
     delete&p;
 }
 
@@ -43,7 +49,8 @@ bool ActuatorMongoDb::connect()
 
 bool ActuatorMongoDb::disconnect()
 {
-    return true;
+    dPvt();
+    return p.disconnect();
 }
 
 bool ActuatorMongoDb::isConnected()

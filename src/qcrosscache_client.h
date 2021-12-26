@@ -36,40 +36,10 @@ public:
     //!
     explicit Client(ActuatorInterface *interface, QObject*parent=nullptr);
 
-
-    //!
-    //! \brief clientForLocal
-    //! \return
-    //!
-    static Client*clientForLocal(QObject*parent=nullptr);
-
-    //!
-    //! \brief clientForLocalSocket
-    //! \return
-    //!
-    static Client*clientForLocalSocket(QObject*parent=nullptr);
-
-    //!
-    //! \brief clientForMemcached
-    //! \return
-    //!
-    static Client*clientForMemcached(QObject*parent=nullptr);
-
-    //!
-    //! \brief clientForMongoDb
-    //! \return
-    //!
-    static Client*clientForMongoDb(QObject*parent=nullptr);
-
-    //!
-    //! \brief clientForRedis
-    //! \return
-    //!
-    static Client*clientForRedis(QObject*parent=nullptr);
-
     //!
     //!
     ~Client();
+
 
     //!
     //! \brief server
@@ -161,7 +131,30 @@ public:
 
 private:
     void*p=nullptr;
-signals:
 };
+
+//!
+//! \brief clientForLocal
+//! \return
+//!
+Client*clientForLocal(QObject*parent=nullptr);
+
+//!
+//! \brief clientForMemcached
+//! \return
+//!
+Client*clientForMemcached(QObject*parent=nullptr);
+
+//!
+//! \brief clientForMongoDb
+//! \return
+//!
+Client*clientForMongoDb(QObject*parent=nullptr);
+
+//!
+//! \brief clientForRedis
+//! \return
+//!
+Client*clientForRedis(QObject*parent=nullptr);
 
 }
