@@ -4,16 +4,18 @@
 #include "./p_qcrosscache_actuator_memcached.h"
 #include "../qcrosscache_server.h"
 #include <QDebug>
+
+#ifdef Q_CROSSCACHE_MEMCACHED
 #include <QTcpSocket>
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
 #include <vector>
 #include <libmemcached/memcached.h>
-
 extern "C" {
 #include <libmemcached/memcached.h>
 }
+#endif
 
 namespace QCrossCache {
 
@@ -23,18 +25,31 @@ auto&p = *reinterpret_cast<ActuatorMemcachedPvt*>(this->p)
 class ActuatorMemcachedPvt{
 public:
     ActuatorMemcached*parent=nullptr;
+#ifdef Q_CROSSCACHE_MEMCACHED
     memcached_server_st *memc_server_st = nullptr;
-    memcached_st *memc_st;
+    memcached_st *memc_st=nullptr;
     bool memc_connected=false;
-    int expire_time = 0;
     uint32_t memc_flag = 0;
-    //size_t value_length=0;
+#endif
     explicit ActuatorMemcachedPvt(ActuatorMemcached *parent)
     {
         this->parent=parent;
     }
+
     virtual ~ActuatorMemcachedPvt()
     {
+        this->disconnect();
+    }
+
+    bool disconnect()
+    {
+#ifdef Q_CROSSCACHE_MEMCACHED
+        if(!this->memc_connected)
+            return true;
+        this->memc_connected=false;
+        memcached_server_free(this->memc_server_st);
+#endif
+        return true;
     }
 };
 
@@ -52,12 +67,14 @@ ActuatorMemcached::ActuatorMemcached(Server *server, const QByteArray &dataGroup
 ActuatorMemcached::~ActuatorMemcached()
 {
     dPvt();
-    this->disconnect();
     delete&p;
 }
 
 bool ActuatorMemcached::connect()
 {
+#ifndef Q_CROSSCACHE_MEMCACHED
+    return ActuatorInterface::connect();
+#else
     dPvt();
     if(p.memc_connected)
         return true;
@@ -77,26 +94,34 @@ bool ActuatorMemcached::connect()
     }
     qDebug()<<"couldn't add server\n";
     return false;
+#endif
 }
 
 bool ActuatorMemcached::disconnect()
 {
+#ifndef Q_CROSSCACHE_MEMCACHED
+    return ActuatorInterface::disconnect();
+#else
     dPvt();
-    if(!p.memc_connected)
-        return true;
-    p.memc_connected=false;
-    memcached_server_free(p.memc_server_st);
-    return true;
+    return p.disconnect();
+#endif
 }
 
 bool ActuatorMemcached::isConnected()
 {
+#ifndef Q_CROSSCACHE_MEMCACHED
+    return ActuatorInterface::isConnected();
+#else
     dPvt();
     return p.memc_connected;
+#endif
 }
 
 bool ActuatorMemcached::clear()
 {
+#ifndef Q_CROSSCACHE_MEMCACHED
+    return ActuatorInterface::clear();
+#else
     dPvt();
     if(!p.memc_connected)
         return false;
@@ -104,10 +129,14 @@ bool ActuatorMemcached::clear()
     if(rc!=MEMCACHED_SUCCESS)
         return false;
     return true;
+#endif
 }
 
 bool ActuatorMemcached::exists(const QByteArray &key)
 {
+#ifndef Q_CROSSCACHE_MEMCACHED
+    return ActuatorInterface::exists(key);
+#else
     dPvt();
     if(!p.memc_connected)
         return false;
@@ -117,10 +146,14 @@ bool ActuatorMemcached::exists(const QByteArray &key)
     if(rc==MEMCACHED_SUCCESS)
         return true;
     return false;
+#endif
 }
 
 bool ActuatorMemcached::put(const QByteArray &key, const QByteArray &data, const quint64 expiration)
 {
+#ifndef Q_CROSSCACHE_MEMCACHED
+    return ActuatorInterface::put(key, data, expiration);
+#else
     dPvt();
     if(!p.memc_connected)
         return false;
@@ -131,10 +164,14 @@ bool ActuatorMemcached::put(const QByteArray &key, const QByteArray &data, const
     if(rc==MEMCACHED_SUCCESS)
         return true;
     return false;
+#endif
 }
 
 QByteArray ActuatorMemcached::get(const QByteArray &key)
 {
+#ifndef Q_CROSSCACHE_MEMCACHED
+    return ActuatorInterface::get(key);
+#else
     dPvt();
     if(!p.memc_connected)
         return {};
@@ -146,10 +183,14 @@ QByteArray ActuatorMemcached::get(const QByteArray &key)
     if(rc!=MEMCACHED_SUCCESS)
         return {};
     return result;
+#endif
 }
 
 QByteArray ActuatorMemcached::take(const QByteArray &key)
 {
+#ifndef Q_CROSSCACHE_MEMCACHED
+    return ActuatorInterface::take(key);
+#else
     dPvt();
     if(!p.memc_connected)
         return {};
@@ -165,10 +206,14 @@ QByteArray ActuatorMemcached::take(const QByteArray &key)
     if(rc!=MEMCACHED_SUCCESS)
         return {};
     return result;
+#endif
 }
 
 bool ActuatorMemcached::remove(const QByteArray &key)
 {
+#ifndef Q_CROSSCACHE_MEMCACHED
+    return ActuatorInterface::remove(key);
+#else
     dPvt();
     if(!p.memc_connected)
         return {};
@@ -178,10 +223,14 @@ bool ActuatorMemcached::remove(const QByteArray &key)
     if(rc==MEMCACHED_SUCCESS)
         return true;
     return false;
+#endif
 }
 
 QVector<QByteArray> ActuatorMemcached::list(const QByteArray &key)
 {
+#ifndef Q_CROSSCACHE_MEMCACHED
+    return ActuatorInterface::list(key);
+#else
     QVector<QByteArray> __return;
     auto hostName=this->server()->hostName();
     auto portNumber=this->server()->portNumber().toInt();
@@ -214,6 +263,7 @@ QVector<QByteArray> ActuatorMemcached::list(const QByteArray &key)
     }
     delete thread;
     return __return;
+#endif
 }
 
 QVector<QByteArray> ActuatorMemcached::listKeys()
