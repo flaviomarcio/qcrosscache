@@ -6,14 +6,11 @@
 ## Working architecture
 
 ```mermaid
-graph TD;
-A[QCrossCache::Client] 
-A --> B(QCrossCache::ActuatorInterface)
-B --> BA(QCrossCache::ActuatorLocal)--> BAA(QCrossCache::Pool)--> BAAA(QCrossCache::CacheRepository)
-B --> BB(QCrossCache::ActuatorMemcached)--> BBA(Memcached server)
-B --> BC(QCrossCache::ActuatorMongoDb)--> BCA(MongoDb server)
-B --> BD(QCrossCache::ActuatorRedis)--> BDA(Redis server)
-B --> BE(QCrossCache::ActuatorCustomise)--> BEA(YouServer)
+flowchart TD
+A[Hard] -->|Text| B(Round)
+B --> C{Decision}
+C -->|One| D[Result 1]
+C -->|Two| E[Result 2]
 ```
 
 ## CMake Build information
