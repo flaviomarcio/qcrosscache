@@ -5,7 +5,7 @@
 
 ## Working architecture
 
-```mermaid
+```
 graph TD
 A[QCrossCache::Client] 
 A --> B(QCrossCache::ActuatorInterface)
