@@ -6,7 +6,7 @@
 ## Working architecture
 
 ```mermaid
-graph LR
+graph TD
 A[QCrossCache::Client] 
 A --> B(QCrossCache::ActuatorInterface)
 B --> BA(QCrossCache::ActuatorLocal)--> BAA(QCrossCache::Pool)--> BAAA(QCrossCache::CacheRepository)
