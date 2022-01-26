@@ -1,3 +1,5 @@
+
+##declare to include CONFIG+=Q_CROSSCACHE_MEMCACHED
 CONFIG(Q_CROSSCACHE_MEMCACHED){
 HEADERS += \
     $$PWD/private/p_qcrosscache_actuator_memcached.h
@@ -6,6 +8,7 @@ SOURCES += \
     $$PWD/private/p_qcrosscache_actuator_memcached.cpp
 }
 
+##declare to include CONFIG+=Q_CROSSCACHE_REDIS
 CONFIG(Q_CROSSCACHE_REDIS){
 HEADERS += \
     $$PWD/private/p_qcrosscache_actuator_redis.h
@@ -14,6 +17,7 @@ SOURCES += \
     $$PWD/private/p_qcrosscache_actuator_redis.cpp
 }
 
+##declare to include CONFIG+=Q_CROSSCACHE_MONGODB
 CONFIG(Q_CROSSCACHE_MONGODB){
 HEADERS += \
     $$PWD/private/p_qcrosscache_actuator_mongodb.h
