@@ -6,13 +6,13 @@
 #include "./qcrosscache_types.h"
 
 #define Q_CROSSCACHE_REGISTER_INTERFACE(serviceName, object)\
-static auto const interface__##object=QCrossCache::ActuatorManager::instance().registerInterface(#serviceName, object::staticMetaObject);
+static auto const interface__##object=QCrossCache::ActuatorManager::instance().interfaceRegister(#serviceName, object::staticMetaObject);
 
 namespace QCrossCache {
 
 class Session;
 class Server;
-
+class ActuatorInterface;
 //!
 //! \brief The ActuatorManager class
 //!
@@ -46,7 +46,14 @@ public:
     //! \brief interfaceRegister
     //! \param metaObject
     //!
-    ActuatorInterfaceItem *registerInterface(const QByteArray&serviceName, const QMetaObject &metaObject);
+    ActuatorInterfaceItem *interfaceRegister(const QByteArray&interfaceName, const QMetaObject &metaObject);
+
+    //!
+    //! \brief interfaceCreate
+    //! \param interfaceName
+    //! \return
+    //!
+    ActuatorInterface *interfaceCreate(const QByteArray&interfaceName);
 
     //!
     //! \brief createServer

@@ -1,10 +1,7 @@
 #include "./qcrosscache_client.h"
 #include "./qcrosscache_server.h"
+#include "./qcrosscache_actuator_manager.h"
 #include "./qcrosscache_actuator_interface.h"
-#include "./private/p_qcrosscache_actuator_local.h"
-#include "./private/p_qcrosscache_actuator_memcached.h"
-#include "./private/p_qcrosscache_actuator_mongodb.h"
-#include "./private/p_qcrosscache_actuator_redis.h"
 #include <QVariantList>
 #include <QVariantHash>
 
@@ -35,14 +32,14 @@ public:
 
 Client::Client(QObject *parent):QObject(parent)
 {
-    auto acLocal=new ActuatorLocal(this);
+    auto acLocal=ActuatorManager::instance().interfaceCreate(QByteArrayLiteral("local"));
     this->p=new ClientPvt(this, acLocal);
 }
 
 Client::Client(const QByteArray&dataGroup, QObject*parent):QObject(parent)
 {
     Q_UNUSED(dataGroup);
-    auto acLocal=new ActuatorLocal(this);
+    auto acLocal=ActuatorManager::instance().interfaceCreate(QByteArrayLiteral("local"));
     acLocal->setDataGroup(dataGroup);
     this->p=new ClientPvt(this, acLocal);
 }
@@ -167,26 +164,36 @@ QVector<QByteArray> Client::listKeys()
 
 Client *clientForLocal(QObject *parent)
 {
-    auto client=new Client(parent);
-    return client;
+    auto interface=ActuatorManager::instance().interfaceCreate(QByteArrayLiteral("local"));
+    if(interface==nullptr)
+        return nullptr;
+
+    return new Client(interface, parent);
 }
 
 Client *clientForMemcached(QObject *parent)
 {
-    auto client=new Client(new ActuatorMemcached(),parent);
-    return client;
+    auto interface=ActuatorManager::instance().interfaceCreate(QByteArrayLiteral("mancached"));
+    if(interface==nullptr)
+        return nullptr;
+
+    return new Client(interface, parent);
 }
 
 Client *clientForMongoDb(QObject *parent)
 {
-    auto client=new Client(new ActuatorMongoDb(),parent);
-    return client;
+    auto interface=ActuatorManager::instance().interfaceCreate(QByteArrayLiteral("mongodb"));
+    if(interface==nullptr)
+        return nullptr;
+    return new Client(interface, parent);
 }
 
 Client *clientForRedis(QObject *parent)
 {
-    auto client=new Client(new ActuatorRedis(),parent);
-    return client;
+    auto interface=ActuatorManager::instance().interfaceCreate(QByteArrayLiteral("redis"));
+    if(interface==nullptr)
+        return nullptr;
+    return new Client(interface, parent);
 }
 
 }

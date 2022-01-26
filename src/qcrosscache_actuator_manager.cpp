@@ -58,7 +58,7 @@ const ActuatorInterfaceCollection &ActuatorManager::interfaceRegistered()
     return p.interfaceCollection;
 }
 
-ActuatorInterfaceItem*ActuatorManager::registerInterface(const QByteArray &serviceName, const QMetaObject &metaObject)
+ActuatorInterfaceItem*ActuatorManager::interfaceRegister(const QByteArray &interfaceName, const QMetaObject &metaObject)
 {
     auto object=metaObject.newInstance();
     if(object==nullptr){
@@ -70,10 +70,20 @@ ActuatorInterfaceItem*ActuatorManager::registerInterface(const QByteArray &servi
         return nullptr;
     }
     dPvt();
-    ActuatorInterfaceItem*interfaceItem=new ActuatorInterfaceItem(serviceName, metaObject);
-    p.interfaceCollection.insert(interfaceItem->name, interfaceItem);
+    auto interfaceItem=new ActuatorInterfaceItem(interfaceName, metaObject);
+    p.interfaceCollection.insert(interfaceItem->name.toLower(), interfaceItem);
     delete object;
     return interfaceItem;
+}
+
+ActuatorInterface *ActuatorManager::interfaceCreate(const QByteArray &interfaceName)
+{
+    dPvt();
+    auto interfaceItem=p.interfaceCollection.value(interfaceName.toLower());
+    if(interfaceItem==nullptr)
+        return nullptr;
+
+    return interfaceItem->newObject<ActuatorInterface>();
 }
 
 Server *ActuatorManager::createServer(const QByteArray &service, const QByteArray &hostName, const QByteArray &passWord, const QByteArray &portNumber)
