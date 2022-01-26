@@ -4,9 +4,9 @@ QT += network
 CONFIG += c++17
 
 QTREFORCE_QCROSSCACHE=true
-QMAKE_CXXFLAGS += -DQTREFORCE_QCROSSCACHE=\\\"$$QTREFORCE_QCROSSCACHE\\\"
+DEFINES+=QTREFORCE_QCROSSCACHE
 
-!CONFIG(Q_CROSSCACHE_MEMCACHED):message("QCrossCache: libmemcached removed")
+#!CONFIG(Q_CROSSCACHE_MEMCACHED):message("QCrossCache: libmemcached removed")
 
 CONFIG(Q_CROSSCACHE_MEMCACHED){
     #libmamcached
@@ -17,7 +17,7 @@ CONFIG(Q_CROSSCACHE_MEMCACHED){
         DEFINES-=Q_CROSSCACHE_MEMCACHED
     }
     else{
-        message("QCrossCache: libmemcached included")
+        #message("QCrossCache: libmemcached included")
         LIBS += -lmemcached
         Q_CROSSCACHE_MEMCACHED=true
         DEFINES+=Q_CROSSCACHE_MEMCACHED
