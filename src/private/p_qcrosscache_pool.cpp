@@ -27,7 +27,7 @@ void PoolPvt::start()
 
 void PoolPvt::stop()
 {
-    QMutexLocker locker(&mutexCache);
+    QMutexLOCKER locker(&mutexCache);
     for(auto&thread:hashRepository){
         thread->quit();
     }
@@ -126,7 +126,7 @@ const QVector<QByteArray> PoolPvt::cacheListKeys(const QByteArray &dataGroup)
 
 CacheRepository *PoolPvt::cacheRepository(const QByteArray &dataGroup)
 {
-    QMutexLocker locker(&mutexCache);
+    QMutexLOCKER locker(&mutexCache);
     auto repository=this->hashRepository.value(dataGroup.toLower());
     if(repository==nullptr){
         repository=new CacheRepository();
