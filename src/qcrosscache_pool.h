@@ -1,11 +1,11 @@
 #pragma once
 
+#include "./qcrosscache_global.h"
+#include "./qcrosscache_types.h"
+#include <QMutex>
 #include <QObject>
 #include <QThread>
 #include <QVariant>
-#include <QMutex>
-#include "./qcrosscache_global.h"
-#include "./qcrosscache_types.h"
 
 namespace QCrossCache {
 
@@ -30,13 +30,13 @@ public:
     //! \brief start
     //! \return
     //!
-    virtual Pool&start();
+    virtual Pool &start();
 
     //!
     //! \brief stop
     //! \return
     //!
-    virtual Pool&stop();
+    virtual Pool &stop();
 
     //!
     //! \brief isStarted
@@ -48,7 +48,7 @@ public:
     //! \brief instance
     //! \return
     //!
-    static Pool&instance();
+    static Pool &instance();
 
 public slots:
     //!
@@ -72,7 +72,10 @@ public slots:
     //! \param expiration
     //! \return
     //!
-    Pool &cachePut(const QByteArray&dataGroup, const QByteArray&key, const QByteArray&data, const quint64 expiration);
+    Pool &cachePut(const QByteArray &dataGroup,
+                   const QByteArray &key,
+                   const QByteArray &data,
+                   const quint64 expiration);
 
     //!
     //! \brief cacheRemove
@@ -80,7 +83,7 @@ public slots:
     //! \param key
     //! \return
     //!
-    Pool &cacheRemove(const QByteArray&dataGroup, const QByteArray&key);
+    Pool &cacheRemove(const QByteArray &dataGroup, const QByteArray &key);
 
     //!
     //! \brief cacheGet
@@ -88,8 +91,7 @@ public slots:
     //! \param key
     //! \return
     //!
-    QByteArray cacheGet(const QByteArray&dataGroup, const QByteArray&key);
-
+    QByteArray cacheGet(const QByteArray &dataGroup, const QByteArray &key);
 
     //!
     //! \brief cacheTake
@@ -97,7 +99,7 @@ public slots:
     //! \param key
     //! \return
     //!
-    QByteArray cacheTake(const QByteArray&dataGroup, const QByteArray&key);
+    QByteArray cacheTake(const QByteArray &dataGroup, const QByteArray &key);
 
     //!
     //! \brief cacheList
@@ -105,18 +107,18 @@ public slots:
     //! \param key
     //! \return
     //!
-    QVector<QByteArray> cacheList(const QByteArray&dataGroup, const QByteArray &key);
+    QVector<QByteArray> cacheList(const QByteArray &dataGroup, const QByteArray &key);
 
     //!
     //! \brief cacheListKeys
     //! \param dataGroup
     //! \return
     //!
-    QVector<QByteArray> cacheListKeys(const QByteArray&dataGroup);
-private:
-    void*p=nullptr;
-signals:
+    QVector<QByteArray> cacheListKeys(const QByteArray &dataGroup);
 
+private:
+    void *p = nullptr;
+signals:
 };
 
-}
+} // namespace QCrossCache

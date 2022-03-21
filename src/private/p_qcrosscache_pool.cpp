@@ -1,7 +1,7 @@
 #include "./p_qcrosscache_pool.h"
+#include "../../../qstm/src/qstm_types.h"
 #include "./p_qcrosscache_cache_repository.h"
 #include "./p_qcrosscache_cache_request.h"
-#include "../../../qstm/src/qstm_types.h"
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QTimer>
@@ -10,7 +10,7 @@ namespace QCrossCache {
 
 PoolPvt::PoolPvt(Pool *parent)
 {
-    this->parent=parent;
+    this->parent = parent;
 }
 
 PoolPvt::~PoolPvt()
@@ -20,19 +20,19 @@ PoolPvt::~PoolPvt()
 
 void PoolPvt::start()
 {
-    if(started)
+    if (started)
         return;
     this->stop();
-    started=true;
+    started = true;
 }
 
 void PoolPvt::stop()
 {
     QMutexLOCKER locker(&mutexCache);
-    for(auto&thread:hashRepository){
+    for (auto &thread : hashRepository) {
         thread->quit();
     }
-    for(auto&thread:hashRepository){
+    for (auto &thread : hashRepository) {
         thread->wait();
         delete thread;
     }
@@ -51,10 +51,10 @@ QVector<QByteArray> PoolPvt::cacheGroups()
 
 void PoolPvt::cacheClearAll()
 {
-    auto dataGroupList=this->hashRepository.keys();
-    for(auto&dataGroup:dataGroupList){
-        auto request=this->cacheRequest(dataGroup);
-        if(request==nullptr)
+    auto dataGroupList = this->hashRepository.keys();
+    for (auto &dataGroup : dataGroupList) {
+        auto request = this->cacheRequest(dataGroup);
+        if (request == nullptr)
             return;
         emit request->cacheClear();
         request->wait();
@@ -63,32 +63,35 @@ void PoolPvt::cacheClearAll()
 
 void PoolPvt::cacheClear(const QByteArray &dataGroup)
 {
-    auto request=this->cacheRequest(dataGroup);
-    if(request==nullptr)
+    auto request = this->cacheRequest(dataGroup);
+    if (request == nullptr)
         return;
     emit request->cacheClear();
 }
 
-void PoolPvt::cachePut(const QByteArray &dataGroup, const QByteArray &key, const QByteArray &data, const quint64 expiration)
+void PoolPvt::cachePut(const QByteArray &dataGroup,
+                       const QByteArray &key,
+                       const QByteArray &data,
+                       const quint64 expiration)
 {
-    auto request=this->cacheRequest(dataGroup);
-    if(request==nullptr)
+    auto request = this->cacheRequest(dataGroup);
+    if (request == nullptr)
         return;
     emit request->cachePut(key, data, expiration);
 }
 
 void PoolPvt::cacheRemove(const QByteArray &dataGroup, const QByteArray &key)
 {
-    auto request=this->cacheRequest(dataGroup);
-    if(request==nullptr)
+    auto request = this->cacheRequest(dataGroup);
+    if (request == nullptr)
         return;
     emit request->cacheRemove(key);
 }
 
 const QByteArray PoolPvt::cacheGet(const QByteArray &dataGroup, const QByteArray &key)
 {
-    auto request=this->cacheRequest(dataGroup);
-    if(request==nullptr)
+    auto request = this->cacheRequest(dataGroup);
+    if (request == nullptr)
         return {};
     emit request->cacheGet(key);
     request->wait();
@@ -97,8 +100,8 @@ const QByteArray PoolPvt::cacheGet(const QByteArray &dataGroup, const QByteArray
 
 const QByteArray PoolPvt::cacheTake(const QByteArray &dataGroup, const QByteArray &key)
 {
-    auto request=this->cacheRequest(dataGroup);
-    if(request==nullptr)
+    auto request = this->cacheRequest(dataGroup);
+    if (request == nullptr)
         return {};
     emit request->cacheTake(key);
     request->wait();
@@ -107,8 +110,8 @@ const QByteArray PoolPvt::cacheTake(const QByteArray &dataGroup, const QByteArra
 
 const QVector<QByteArray> PoolPvt::cacheList(const QByteArray &dataGroup, const QByteArray &key)
 {
-    auto request=this->cacheRequest(dataGroup);
-    if(request==nullptr)
+    auto request = this->cacheRequest(dataGroup);
+    if (request == nullptr)
         return {};
     emit request->cacheList(key);
     request->wait();
@@ -117,8 +120,8 @@ const QVector<QByteArray> PoolPvt::cacheList(const QByteArray &dataGroup, const 
 
 const QVector<QByteArray> PoolPvt::cacheListKeys(const QByteArray &dataGroup)
 {
-    auto request=this->cacheRequest(dataGroup);
-    if(request==nullptr)
+    auto request = this->cacheRequest(dataGroup);
+    if (request == nullptr)
         return {};
     emit request->cacheListKeys();
     request->wait();
@@ -128,34 +131,33 @@ const QVector<QByteArray> PoolPvt::cacheListKeys(const QByteArray &dataGroup)
 CacheRepository *PoolPvt::cacheRepository(const QByteArray &dataGroup)
 {
     QMutexLOCKER locker(&mutexCache);
-    auto repository=this->hashRepository.value(dataGroup.toLower());
-    if(repository==nullptr){
-        repository=new CacheRepository();
+    auto repository = this->hashRepository.value(dataGroup.toLower());
+    if (repository == nullptr) {
+        repository = new CacheRepository();
         repository->start();
-        while(repository->eventDispatcher()==nullptr)
+        while (repository->eventDispatcher() == nullptr)
             QThread::msleep(1);
-        this->hashRepository.insert(dataGroup.toLower(),repository);
+        this->hashRepository.insert(dataGroup.toLower(), repository);
     }
     return repository;
 }
 
 CacheRequest *PoolPvt::cacheRequest(const QByteArray &dataGroup)
 {
-    auto repository=this->cacheRepository(dataGroup);
-    if(repository==nullptr)
+    auto repository = this->cacheRepository(dataGroup);
+    if (repository == nullptr)
         return nullptr;
-    auto thread=requestList.isEmpty()?nullptr:requestList.takeFirst();
-    if(thread==nullptr)
-        thread=new CacheRequest();
-    return&thread->start(repository);
+    auto thread = requestList.isEmpty() ? nullptr : requestList.takeFirst();
+    if (thread == nullptr)
+        thread = new CacheRequest();
+    return &thread->start(repository);
 }
 
 void PoolPvt::onrequestFinished(CacheRequest *request)
 {
     request->quit();
     request->wait();
-    this->requestList<<request;
+    this->requestList << request;
 }
 
-
-}
+} // namespace QCrossCache

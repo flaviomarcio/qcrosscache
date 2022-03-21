@@ -1,11 +1,11 @@
 #pragma once
 
-#include <QObject>
-#include <QVariant>
-#include <QUuid>
+#include "./qcrosscache_client.h"
 #include "./qcrosscache_global.h"
 #include "./qcrosscache_types.h"
-#include "./qcrosscache_client.h"
+#include <QObject>
+#include <QUuid>
+#include <QVariant>
 
 namespace QCrossCache {
 class ActuatorInterface;
@@ -17,15 +17,13 @@ class Q_CROSSCACHE_EXPORT Server : public QObject
 {
     Q_OBJECT
     friend class ActuatorManager;
-public:
 
-    enum Service{
-        Local=0, Memcached=1
-    };
+public:
+    enum Service { Local = 0, Memcached = 1 };
 
     Q_ENUM(Service)
 
-    Q_PROPERTY(QUuid uuid READ uuid)
+    Q_PROPERTY(QUuid uuid READ uuid NOTIFY uuidChanged)
     Q_PROPERTY(QByteArray service READ service WRITE setService NOTIFY hostNameChanged)
     Q_PROPERTY(QByteArray hostName READ hostName WRITE setHostName NOTIFY hostNameChanged)
     Q_PROPERTY(QByteArray passWord READ passWord WRITE setPassWord NOTIFY passWordChanged)
@@ -40,6 +38,7 @@ public:
     //!
     //!
     ~Server();
+
 private:
     //!
     //! \brief createServer
@@ -49,14 +48,19 @@ private:
     //! \param dataGroup
     //! \return
     //!
-    static Server*createServer(QObject *parent, ActuatorInterfaceItem*ActuatorInterface, const QByteArray&hostName, const QByteArray&passWord, const QByteArray&portNumber);
+    static Server *createServer(QObject *parent,
+                                ActuatorInterfaceItem *ActuatorInterface,
+                                const QByteArray &hostName,
+                                const QByteArray &passWord,
+                                const QByteArray &portNumber);
+
 public:
     //!
     //! \brief createClient
     //! \param dataGroup
     //! \return
     //!
-    virtual Client*createClient(const QByteArray &dataGroup=QByteArray());
+    virtual Client *createClient(const QByteArray &dataGroup = QByteArray());
 
     //!
     //! \brief uuid
@@ -74,7 +78,7 @@ public:
     //! \brief setService
     //! \param value
     //!
-    virtual Server&setService(const QByteArray &value);
+    virtual Server &setService(const QByteArray &value);
 
     //!
     //! \brief hostName
@@ -86,7 +90,7 @@ public:
     //! \brief setHostName
     //! \param value
     //!
-    virtual Server&setHostName(const QByteArray &value);
+    virtual Server &setHostName(const QByteArray &value);
 
     //!
     //! \brief passWord
@@ -98,7 +102,7 @@ public:
     //! \brief setPassWord
     //! \param value
     //!
-    virtual Server&setPassWord(const QByteArray &value);
+    virtual Server &setPassWord(const QByteArray &value);
 
     //!
     //! \brief portNumber
@@ -110,20 +114,19 @@ public:
     //! \brief setPortNumber
     //! \param value
     //!
-    virtual Server&setPortNumber(const QByteArray &value);
+    virtual Server &setPortNumber(const QByteArray &value);
 
     //!
     //! \brief setPortNumber
     //! \param value
     //! \return
     //!
-    virtual Server&setPortNumber(const qlonglong &value);
-
-
+    virtual Server &setPortNumber(const qlonglong &value);
 
 private:
-    void*p=nullptr;
+    void *p = nullptr;
 signals:
+    void uuidChanged();
     void serviceChanged();
     void hostNameChanged();
     void passWordChanged();
@@ -131,5 +134,4 @@ signals:
     void dataGroupChanged();
 };
 
-
-}
+} // namespace QCrossCache

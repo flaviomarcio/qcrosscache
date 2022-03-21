@@ -1,14 +1,13 @@
 #pragma once
 
+#include "./qcrosscache_global.h"
 #include <QObject>
 #include <QVariant>
-#include "./qcrosscache_global.h"
 
 namespace QCrossCache {
 
 class ActuatorInterfaceItem;
 class Server;
-
 
 //!
 //! \brief The ActuatorInterface class
@@ -28,7 +27,7 @@ public:
     //! \param groupData
     //! \param parent
     //!
-    Q_INVOKABLE explicit ActuatorInterface(Server*server, const QByteArray &dataGroup);
+    Q_INVOKABLE explicit ActuatorInterface(Server *server, const QByteArray &dataGroup);
 
     //!
     //!
@@ -38,14 +37,14 @@ public:
     //! \brief server
     //! \return
     //!
-    virtual Server*server();
+    virtual Server *server();
 
     //!
     //! \brief dataGroup
     //! \return
     //!
-    virtual const QByteArray &dataGroup()const;
-    virtual ActuatorInterface&setDataGroup(const QByteArray&value);
+    virtual const QByteArray &dataGroup() const;
+    virtual ActuatorInterface &setDataGroup(const QByteArray &value);
 
     //!
     //! \brief connect
@@ -76,7 +75,7 @@ public:
     //! \param key
     //! \return
     //!
-    virtual bool exists(const QByteArray&key);
+    virtual bool exists(const QByteArray &key);
 
     //!
     //! \brief put
@@ -84,7 +83,7 @@ public:
     //! \param data
     //! \return
     //!
-    virtual bool put(const QByteArray&key, const QByteArray&data, const quint64 expiration);
+    virtual bool put(const QByteArray &key, const QByteArray &data, const quint64 expiration);
 
     //!
     //! \brief get
@@ -92,7 +91,7 @@ public:
     //! \param data
     //! \return
     //!
-    virtual QByteArray get(const QByteArray&key);
+    virtual QByteArray get(const QByteArray &key);
 
     //!
     //! \brief get
@@ -100,14 +99,14 @@ public:
     //! \param data
     //! \return
     //!
-    virtual QByteArray take(const QByteArray&key);
+    virtual QByteArray take(const QByteArray &key);
 
     //!
     //! \brief remove
     //! \param key
     //! \return
     //!
-    virtual bool remove(const QByteArray&key);
+    virtual bool remove(const QByteArray &key);
 
     //!
     //! \brief list
@@ -115,7 +114,7 @@ public:
     //! \param listKeys
     //! \return
     //!
-    virtual QVector<QByteArray> list(const QByteArray&key);
+    virtual QVector<QByteArray> list(const QByteArray &key);
 
     //!
     //! \brief listKeys
@@ -124,8 +123,8 @@ public:
     virtual QVector<QByteArray> listKeys();
 
 private:
-    void*p=nullptr;
+    void *p = nullptr;
 signals:
 };
 
-}
+} // namespace QCrossCache

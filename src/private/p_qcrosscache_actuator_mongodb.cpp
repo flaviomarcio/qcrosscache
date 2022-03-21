@@ -6,41 +6,32 @@
 
 namespace QCrossCache {
 
-#define dPvt()\
-auto&p = *reinterpret_cast<ActuatorMongoDbPvt*>(this->p)
+#define dPvt() auto &p = *reinterpret_cast<ActuatorMongoDbPvt *>(this->p)
 
-class ActuatorMongoDbPvt{
+class ActuatorMongoDbPvt
+{
 public:
-    ActuatorMongoDb*parent=nullptr;
-    explicit ActuatorMongoDbPvt(ActuatorMongoDb *parent)
-    {
-        this->parent=parent;
-    }
-    virtual ~ActuatorMongoDbPvt()
-    {
-        this->disconnect();
-    }
-    bool disconnect()
-    {
-        return true;
-    }
+    ActuatorMongoDb *parent = nullptr;
+    explicit ActuatorMongoDbPvt(ActuatorMongoDb *parent) { this->parent = parent; }
+    virtual ~ActuatorMongoDbPvt() { this->disconnect(); }
+    bool disconnect() { return true; }
 };
-
 
 ActuatorMongoDb::ActuatorMongoDb(QObject *parent) : ActuatorInterface(parent)
 {
-    this->p=new ActuatorMongoDbPvt(this);
+    this->p = new ActuatorMongoDbPvt{this};
 }
 
-ActuatorMongoDb::ActuatorMongoDb(Server *server, const QByteArray &dataGroup) : ActuatorInterface(server, dataGroup)
+ActuatorMongoDb::ActuatorMongoDb(Server *server, const QByteArray &dataGroup)
+    : ActuatorInterface(server, dataGroup)
 {
-    this->p=new ActuatorMongoDbPvt(this);
+    this->p = new ActuatorMongoDbPvt{this};
 }
 
 ActuatorMongoDb::~ActuatorMongoDb()
 {
     dPvt();
-    delete&p;
+    delete &p;
 }
 
 bool ActuatorMongoDb::connect()
@@ -104,7 +95,7 @@ QVector<QByteArray> ActuatorMongoDb::list(const QByteArray &key)
 
 QVector<QByteArray> ActuatorMongoDb::listKeys()
 {
-    qWarning()<<tr("no implemented");
+    qWarning() << tr("no implemented");
     return {};
 }
 

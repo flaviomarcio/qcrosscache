@@ -6,41 +6,32 @@
 
 namespace QCrossCache {
 
-#define dPvt()\
-auto&p = *reinterpret_cast<ActuatorRedisPvt*>(this->p)
+#define dPvt() auto &p = *reinterpret_cast<ActuatorRedisPvt *>(this->p)
 
-class ActuatorRedisPvt{
+class ActuatorRedisPvt
+{
 public:
-    ActuatorRedis*parent=nullptr;
-    explicit ActuatorRedisPvt(ActuatorRedis *parent)
-    {
-        this->parent=parent;
-    }
-    virtual ~ActuatorRedisPvt()
-    {
-        this->disconnect();
-    }
-    bool disconnect()
-    {
-        return true;
-    }
+    ActuatorRedis *parent = nullptr;
+    explicit ActuatorRedisPvt(ActuatorRedis *parent) { this->parent = parent; }
+    virtual ~ActuatorRedisPvt() { this->disconnect(); }
+    bool disconnect() { return true; }
 };
-
 
 ActuatorRedis::ActuatorRedis(QObject *parent) : ActuatorInterface(parent)
 {
-    this->p=new ActuatorRedisPvt(this);
+    this->p = new ActuatorRedisPvt{this};
 }
 
-ActuatorRedis::ActuatorRedis(Server *server, const QByteArray &dataGroup) : ActuatorInterface(server, dataGroup)
+ActuatorRedis::ActuatorRedis(Server *server, const QByteArray &dataGroup)
+    : ActuatorInterface(server, dataGroup)
 {
-    this->p=new ActuatorRedisPvt(this);
+    this->p = new ActuatorRedisPvt{this};
 }
 
 ActuatorRedis::~ActuatorRedis()
 {
     dPvt();
-    delete&p;
+    delete &p;
 }
 
 bool ActuatorRedis::connect()
@@ -104,7 +95,7 @@ QVector<QByteArray> ActuatorRedis::list(const QByteArray &key)
 
 QVector<QByteArray> ActuatorRedis::listKeys()
 {
-    qWarning()<<tr("no implemented");
+    qWarning() << tr("no implemented");
     return {};
 }
 

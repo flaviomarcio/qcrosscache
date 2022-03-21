@@ -1,8 +1,8 @@
 #pragma once
 
+#include "./qcrosscache_global.h"
 #include <QObject>
 #include <QVariant>
-#include "./qcrosscache_global.h"
 
 namespace QCrossCache {
 
@@ -21,37 +21,36 @@ public:
     //! \brief Client
     //! \param parent
     //!
-    Q_INVOKABLE explicit Client(QObject*parent=nullptr);
+    Q_INVOKABLE explicit Client(QObject *parent = nullptr);
 
     //!
     //! \brief Client
     //! \param parent
     //!
-    explicit Client(const QByteArray&dataGroup, QObject*parent=nullptr);
+    explicit Client(const QByteArray &dataGroup, QObject *parent = nullptr);
 
     //!
     //! \brief Client
     //! \param parent
     //! \param interface
     //!
-    explicit Client(ActuatorInterface *interface, QObject*parent=nullptr);
+    explicit Client(ActuatorInterface *interface, QObject *parent = nullptr);
 
     //!
     //!
     ~Client();
 
-
     //!
     //! \brief server
     //! \return
     //!
-    virtual Server*server();
+    virtual Server *server();
 
     //!
     //! \brief dataGroup
     //! \return
     //!
-    virtual const QByteArray &dataGroup()const;
+    virtual const QByteArray &dataGroup() const;
 
     //!
     //! \brief connect
@@ -82,7 +81,7 @@ public:
     //! \param key
     //! \return
     //!
-    virtual bool exists(const QByteArray&key);
+    virtual bool exists(const QByteArray &key);
 
     //!
     //! \brief put
@@ -91,7 +90,7 @@ public:
     //! \param expiration
     //! \return
     //!
-    virtual bool put(const QByteArray&key, const QByteArray&data, const quint64 expiration=0);
+    virtual bool put(const QByteArray &key, const QByteArray &data, const quint64 expiration = 0);
 
     //!
     //! \brief get
@@ -99,7 +98,7 @@ public:
     //! \param data
     //! \return
     //!
-    virtual QByteArray get(const QByteArray&key);
+    virtual QByteArray get(const QByteArray &key);
 
     //!
     //! \brief take
@@ -107,21 +106,21 @@ public:
     //! \param data
     //! \return
     //!
-    virtual QByteArray take(const QByteArray&key);
+    virtual QByteArray take(const QByteArray &key);
 
     //!
     //! \brief remove
     //! \param key
     //! \return
     //!
-    virtual bool remove(const QByteArray&key);
+    virtual bool remove(const QByteArray &key);
 
     //!
     //! \brief list
     //! \param key
     //! \return
     //!
-    virtual QVector<QByteArray> list(const QByteArray&key);
+    virtual QVector<QByteArray> list(const QByteArray &key);
 
     //!
     //! \brief listKeys
@@ -130,31 +129,31 @@ public:
     virtual QVector<QByteArray> listKeys();
 
 private:
-    void*p=nullptr;
+    void *p = nullptr;
 };
 
 //!
 //! \brief clientForLocal
 //! \return
 //!
-Client*clientForLocal(QObject*parent=nullptr);
+Client *clientForLocal(QObject *parent = nullptr);
 
 //!
 //! \brief clientForMemcached
 //! \return
 //!
-Client*clientForMemcached(QObject*parent=nullptr);
+Client *clientForMemcached(QObject *parent = nullptr);
 
 //!
 //! \brief clientForMongoDb
 //! \return
 //!
-Client*clientForMongoDb(QObject*parent=nullptr);
+Client *clientForMongoDb(QObject *parent = nullptr);
 
 //!
 //! \brief clientForRedis
 //! \return
 //!
-Client*clientForRedis(QObject*parent=nullptr);
+Client *clientForRedis(QObject *parent = nullptr);
 
-}
+} // namespace QCrossCache

@@ -1,49 +1,45 @@
 #include "./qcrosscache_actuator_manager.h"
-#include "./qcrosscache_types.h"
-#include "./qcrosscache_server.h"
 #include "./qcrosscache_actuator_interface.h"
-#include <QVariantList>
+#include "./qcrosscache_server.h"
+#include "./qcrosscache_types.h"
+#include <QCryptographicHash>
 #include <QDebug>
 #include <QVariantHash>
-#include <QCryptographicHash>
-
+#include <QVariantList>
 
 namespace QCrossCache {
 
-#define dPvt()\
-auto&p = *reinterpret_cast<ActuatorManagerPvt*>(this->p)
+#define dPvt() auto &p = *reinterpret_cast<ActuatorManagerPvt *>(this->p)
 
-class ActuatorManagerPvt:public QObject{
+class ActuatorManagerPvt : public QObject
+{
 public:
-    ActuatorManager*parent=nullptr;
+    ActuatorManager *parent = nullptr;
     ActuatorInterfaceCollection interfaceCollection;
-    QHash<QByteArray, Server*> servers;
-    explicit ActuatorManagerPvt(ActuatorManager *parent):QObject(parent)
+    QHash<QByteArray, Server *> servers;
+    explicit ActuatorManagerPvt(ActuatorManager *parent) : QObject{parent}
     {
-        this->parent=parent;
+        this->parent = parent;
     }
 
-    virtual ~ActuatorManagerPvt()
-    {
-    }
+    virtual ~ActuatorManagerPvt() {}
 public slots:
-    void serverDestroyed(QObject *object=nullptr)
+    void serverDestroyed(QObject *object = nullptr)
     {
-        auto server=dynamic_cast<Server*>(object);
+        auto server = dynamic_cast<Server *>(object);
         this->servers.remove(server->uuid().toByteArray());
     }
 };
 
-ActuatorManager::ActuatorManager(QObject *parent) : QObject(parent)
+ActuatorManager::ActuatorManager(QObject *parent) : QObject{parent}
 {
-    this->p=new ActuatorManagerPvt(this);
+    this->p = new ActuatorManagerPvt{this};
 }
-
 
 ActuatorManager::~ActuatorManager()
 {
     dPvt();
-    delete&p;
+    delete &p;
 }
 
 ActuatorManager &ActuatorManager::instance()
@@ -58,19 +54,20 @@ const ActuatorInterfaceCollection &ActuatorManager::interfaceRegistered()
     return p.interfaceCollection;
 }
 
-ActuatorInterfaceItem*ActuatorManager::interfaceRegister(const QByteArray &interfaceName, const QMetaObject &metaObject)
+ActuatorInterfaceItem *ActuatorManager::interfaceRegister(const QByteArray &interfaceName,
+                                                          const QMetaObject &metaObject)
 {
-    auto object=metaObject.newInstance();
-    if(object==nullptr){
+    auto object = metaObject.newInstance();
+    if (object == nullptr) {
         return nullptr;
     }
-    auto server=dynamic_cast<ActuatorManager*>(object);
-    if(server==nullptr){
+    auto server = dynamic_cast<ActuatorManager *>(object);
+    if (server == nullptr) {
         delete object;
         return nullptr;
     }
     dPvt();
-    auto interfaceItem=new ActuatorInterfaceItem(interfaceName, metaObject);
+    auto interfaceItem = new ActuatorInterfaceItem(interfaceName, metaObject);
     p.interfaceCollection.insert(interfaceItem->name.toLower(), interfaceItem);
     delete object;
     return interfaceItem;
@@ -79,49 +76,52 @@ ActuatorInterfaceItem*ActuatorManager::interfaceRegister(const QByteArray &inter
 ActuatorInterface *ActuatorManager::interfaceCreate(const QByteArray &interfaceName)
 {
     dPvt();
-    auto interfaceItem=p.interfaceCollection.value(interfaceName.toLower());
-    if(interfaceItem==nullptr)
+    auto interfaceItem = p.interfaceCollection.value(interfaceName.toLower());
+    if (interfaceItem == nullptr)
         return nullptr;
 
     return interfaceItem->newObject<ActuatorInterface>();
 }
 
-Server *ActuatorManager::createServer(const QByteArray &service, const QByteArray &hostName, const QByteArray &passWord, const QByteArray &portNumber)
+Server *ActuatorManager::createServer(const QByteArray &service,
+                                      const QByteArray &hostName,
+                                      const QByteArray &passWord,
+                                      const QByteArray &portNumber)
 {
     dPvt();
 
-    ActuatorInterfaceItem *ActuatorInterface=p.interfaceCollection.value(service.toLower());
+    ActuatorInterfaceItem *ActuatorInterface = p.interfaceCollection.value(service.toLower());
 
-    if(ActuatorInterface==nullptr){
-        qWarning()<<"invalid interface";
+    if (ActuatorInterface == nullptr) {
+        qWarning() << "invalid interface";
         return nullptr;
     }
 
-    auto server=Server::createServer(this, ActuatorInterface, hostName, passWord, portNumber);
+    auto server = Server::createServer(this, ActuatorInterface, hostName, passWord, portNumber);
 
-    auto serverUuid=server->uuid().toByteArray();
-    if(p.servers.contains(serverUuid)){
+    auto serverUuid = server->uuid().toByteArray();
+    if (p.servers.contains(serverUuid)) {
         delete server;
         return p.servers.value(serverUuid);
     }
-    if(server==nullptr){
-        qWarning()<<"no create server";
+    if (server == nullptr) {
+        qWarning() << "no create server";
         return nullptr;
     }
 
-    QObject::connect(server, &Server::destroyed,&p, &ActuatorManagerPvt::serverDestroyed);
-    p.servers[serverUuid]=server;
+    QObject::connect(server, &Server::destroyed, &p, &ActuatorManagerPvt::serverDestroyed);
+    p.servers[serverUuid] = server;
     return server;
 }
 
 Server *ActuatorManager::createServer(const QVariant &settings)
 {
-    auto vSetting=settings.toHash();
-    auto service=vSetting.value(QByteArrayLiteral("service")).toByteArray().toLower();
-    auto hostName=vSetting.value(QByteArrayLiteral("hostName")).toByteArray();
-    auto passWord=vSetting.value(QByteArrayLiteral("passWord")).toByteArray();
-    auto portNumber=vSetting.value(QByteArrayLiteral("portNumber")).toByteArray();
+    auto vSetting = settings.toHash();
+    auto service = vSetting.value(QByteArrayLiteral("service")).toByteArray().toLower();
+    auto hostName = vSetting.value(QByteArrayLiteral("hostName")).toByteArray();
+    auto passWord = vSetting.value(QByteArrayLiteral("passWord")).toByteArray();
+    auto portNumber = vSetting.value(QByteArrayLiteral("portNumber")).toByteArray();
     return createServer(service, hostName, passWord, portNumber);
 }
 
-}
+} // namespace QCrossCache

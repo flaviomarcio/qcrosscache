@@ -12,7 +12,6 @@ class ActuatorRedis : public ActuatorInterface
 {
     Q_OBJECT
 public:
-
     //!
     //! \brief ActuatorRedis
     //! \param parent
@@ -59,7 +58,7 @@ public:
     //! \param key
     //! \return
     //!
-    virtual bool exists(const QByteArray&key);
+    virtual bool exists(const QByteArray &key);
 
     //!
     //! \brief put
@@ -67,7 +66,7 @@ public:
     //! \param data
     //! \return
     //!
-    virtual bool put(const QByteArray&key, const QByteArray &data, const quint64 expiration);
+    virtual bool put(const QByteArray &key, const QByteArray &data, const quint64 expiration);
 
     //!
     //! \brief get
@@ -75,7 +74,7 @@ public:
     //! \param data
     //! \return
     //!
-    virtual QByteArray get(const QByteArray&key);
+    virtual QByteArray get(const QByteArray &key);
 
     //!
     //! \brief get
@@ -83,21 +82,21 @@ public:
     //! \param data
     //! \return
     //!
-    virtual QByteArray take(const QByteArray&key);
+    virtual QByteArray take(const QByteArray &key);
 
     //!
     //! \brief remove
     //! \param key
     //! \return
     //!
-    virtual bool remove(const QByteArray&key);
+    virtual bool remove(const QByteArray &key);
 
     //!
     //! \brief list
     //! \param key
     //! \return
     //!
-    virtual QVector<QByteArray> list(const QByteArray&key);
+    virtual QVector<QByteArray> list(const QByteArray &key);
 
     //!
     //! \brief listKeys
@@ -107,10 +106,10 @@ public:
     virtual QVector<QByteArray> listKeys();
 
 private:
-    void*p=nullptr;
+    void *p = nullptr;
 signals:
 };
 
-Q_CROSSCACHE_REGISTER_INTERFACE(redis,ActuatorRedis)
+Q_CROSSCACHE_REGISTER_INTERFACE(redis, ActuatorRedis)
 
 } // namespace QCrossCache

@@ -1,28 +1,26 @@
 #pragma once
 
-#include <QObject>
-#include <QMutex>
-#include <QHash>
-#include <QList>
-#include <QVector>
+#include "./qcrosscache_global.h"
 #include <QByteArray>
 #include <QDateTime>
-#include "./qcrosscache_global.h"
-
+#include <QHash>
+#include <QList>
+#include <QMutex>
+#include <QObject>
+#include <QVector>
 
 namespace QCrossCache {
 
 class Server;
 class ActuatorInterface;
 
-enum Service{
-    Local=0, Memcached=1
-};
+enum Service { Local = 0, Memcached = 1 };
 
 //!
 //! \brief The ActuatorInterfaceItem class
 //!
-class ActuatorInterfaceItem{
+class ActuatorInterfaceItem
+{
 public:
     QByteArray name;
     QMetaObject metaObject;
@@ -37,21 +35,23 @@ public:
     //! \param serviceName
     //! \param serviceMetaObject
     //!
-    explicit ActuatorInterfaceItem(const QByteArray&serviceName, const QMetaObject&serviceMetaObject);
+    explicit ActuatorInterfaceItem(const QByteArray &serviceName,
+                                   const QMetaObject &serviceMetaObject);
 
     //!
     //! \brief newObject
     //! \param parent
     //! \return
     //!
-    template <class T=QObject>
-    T*newObject(Server*server=nullptr, const QByteArray&dataGroup=QByteArray())
+    template<class T = QObject>
+    T *newObject(Server *server = nullptr, const QByteArray &dataGroup = QByteArray())
     {
-        auto __object=this->metaObject.newInstance(Q_ARG(Server*, server), Q_ARG(QByteArray, dataGroup));
-        if(__object==nullptr)
+        auto __object = this->metaObject.newInstance(Q_ARG(Server *, server),
+                                                     Q_ARG(QByteArray, dataGroup));
+        if (__object == nullptr)
             return nullptr;
-        auto __return=dynamic_cast<T*>(__object);
-        if(__return==nullptr){
+        auto __return = dynamic_cast<T *>(__object);
+        if (__return == nullptr) {
             delete __object;
             return nullptr;
         }
@@ -59,10 +59,9 @@ public:
     }
 };
 
-
 //!
 //! \brief ActuatorInterfaceCollection
 //!
-typedef QHash<QByteArray, ActuatorInterfaceItem*> ActuatorInterfaceCollection;
+typedef QHash<QByteArray, ActuatorInterfaceItem *> ActuatorInterfaceCollection;
 
-}
+} // namespace QCrossCache

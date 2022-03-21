@@ -1,12 +1,14 @@
 #pragma once
 
-#include <QObject>
-#include <QVariant>
 #include "./qcrosscache_global.h"
 #include "./qcrosscache_types.h"
+#include <QObject>
+#include <QVariant>
 
-#define Q_CROSSCACHE_REGISTER_INTERFACE(serviceName, object)\
-static auto const interface__##object=QCrossCache::ActuatorManager::instance().interfaceRegister(#serviceName, object::staticMetaObject);
+#define Q_CROSSCACHE_REGISTER_INTERFACE(serviceName, object) \
+    static auto const interface__##object = QCrossCache::ActuatorManager::instance() \
+                                                .interfaceRegister(#serviceName, \
+                                                                   object::staticMetaObject);
 
 namespace QCrossCache {
 
@@ -34,7 +36,7 @@ public:
     //! \brief instance
     //! \return
     //!
-    static ActuatorManager&instance();
+    static ActuatorManager &instance();
 
     //!
     //! \brief interfaceRegistered
@@ -46,14 +48,15 @@ public:
     //! \brief interfaceRegister
     //! \param metaObject
     //!
-    ActuatorInterfaceItem *interfaceRegister(const QByteArray&interfaceName, const QMetaObject &metaObject);
+    ActuatorInterfaceItem *interfaceRegister(const QByteArray &interfaceName,
+                                             const QMetaObject &metaObject);
 
     //!
     //! \brief interfaceCreate
     //! \param interfaceName
     //! \return
     //!
-    ActuatorInterface *interfaceCreate(const QByteArray&interfaceName);
+    ActuatorInterface *interfaceCreate(const QByteArray &interfaceName);
 
     //!
     //! \brief createServer
@@ -64,17 +67,21 @@ public:
     //! \param dataGroup
     //! \return
     //!
-    Server*createServer(const QByteArray &service, const QByteArray &hostName, const QByteArray &passWord, const QByteArray &portNumber);
+    Server *createServer(const QByteArray &service,
+                         const QByteArray &hostName,
+                         const QByteArray &passWord,
+                         const QByteArray &portNumber);
 
     //!
     //! \brief createServer
     //! \param settings
     //! \return
     //!
-    Server*createServer(const QVariant&settings);
+    Server *createServer(const QVariant &settings);
+
 private:
-    void*p=nullptr;
+    void *p = nullptr;
 signals:
 };
 
-}
+} // namespace QCrossCache

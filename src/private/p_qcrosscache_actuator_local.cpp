@@ -1,41 +1,36 @@
 #include "./p_qcrosscache_actuator_local.h"
-#include "../qcrosscache_server.h"
 #include "../qcrosscache_pool.h"
+#include "../qcrosscache_server.h"
 
 namespace QCrossCache {
 
-#define dPvt()\
-auto&p = *reinterpret_cast<ActuatorLocalPvt*>(this->p)
+#define dPvt() auto &p = *reinterpret_cast<ActuatorLocalPvt *>(this->p)
 
-class ActuatorLocalPvt{
+class ActuatorLocalPvt
+{
 public:
-    ActuatorLocal*parent=nullptr;
-    QMetaObject*actuatorMetaObject=nullptr;
-    Pool&instance=QCrossCache::Pool::instance();
-    explicit ActuatorLocalPvt(ActuatorLocal *parent)
-    {
-        this->parent=parent;
-    }
-    virtual ~ActuatorLocalPvt()
-    {
-    }
+    ActuatorLocal *parent = nullptr;
+    QMetaObject *actuatorMetaObject = nullptr;
+    Pool &instance = QCrossCache::Pool::instance();
+    explicit ActuatorLocalPvt(ActuatorLocal *parent) { this->parent = parent; }
+    virtual ~ActuatorLocalPvt() {}
 };
-
 
 ActuatorLocal::ActuatorLocal(QObject *parent) : ActuatorInterface(parent)
 {
-    this->p=new ActuatorLocalPvt(this);
+    this->p = new ActuatorLocalPvt{this};
 }
 
-ActuatorLocal::ActuatorLocal(Server *server, const QByteArray &dataGroup) : ActuatorInterface(server, dataGroup)
+ActuatorLocal::ActuatorLocal(Server *server, const QByteArray &dataGroup)
+    : ActuatorInterface(server, dataGroup)
 {
-    this->p=new ActuatorLocalPvt(this);
+    this->p = new ActuatorLocalPvt{this};
 }
 
 ActuatorLocal::~ActuatorLocal()
 {
     dPvt();
-    delete&p;
+    delete &p;
 }
 
 bool ActuatorLocal::connect()

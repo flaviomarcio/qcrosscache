@@ -1,62 +1,64 @@
 #include "./qcrosscache_server.h"
 #include "./qcrosscache_actuator_interface.h"
 #include "./qcrosscache_types.h"
+#include <QCryptographicHash>
 #include <QDebug>
 #include <QVariantHash>
-#include <QVariantMap>
 #include <QVariantList>
-#include <QCryptographicHash>
+#include <QVariantMap>
 
 namespace QCrossCache {
 
-#define dPvt()\
-auto&p = *reinterpret_cast<ServerPvt*>(this->p)
+#define dPvt() auto &p = *reinterpret_cast<ServerPvt *>(this->p)
 
-class ServerPvt{
+class ServerPvt
+{
 public:
-    Server *parent=nullptr;
+    Server *parent = nullptr;
     QUuid uuid;
     QByteArray service;
-    QByteArray hostName=QByteArrayLiteral("localhost");
+    QByteArray hostName = QByteArrayLiteral("localhost");
     QByteArray passWord;
     QByteArray portNumber;
-    ActuatorInterfaceItem *ActuatorInterface=nullptr;
-    explicit ServerPvt(Server *parent)
-    {
-        this->parent=parent;
-    }
+    ActuatorInterfaceItem *ActuatorInterface = nullptr;
+    explicit ServerPvt(Server *parent) { this->parent = parent; }
 
-    virtual ~ServerPvt()
-    {
-    }
+    virtual ~ServerPvt() {}
 
-    Server&makeData()
+    Server &makeData()
     {
-        auto serverData=(service+QByteArrayLiteral(".")+hostName+QByteArrayLiteral(".")+passWord+QByteArrayLiteral(".")+portNumber+QByteArrayLiteral(".")).toLower();
-        this->uuid=QUuid::fromString(QString::fromUtf8(QCryptographicHash::hash(serverData, QCryptographicHash::Md5).toHex()));
-        return*this->parent;
+        auto serverData = (service + QByteArrayLiteral(".") + hostName + QByteArrayLiteral(".")
+                           + passWord + QByteArrayLiteral(".") + portNumber + QByteArrayLiteral("."))
+                              .toLower();
+        this->uuid = QUuid::fromString(QString::fromUtf8(
+            QCryptographicHash::hash(serverData, QCryptographicHash::Md5).toHex()));
+        return *this->parent;
     }
 };
 
-Server::Server(QObject *parent) : QObject(parent)
+Server::Server(QObject *parent) : QObject{parent}
 {
-    this->p=new ServerPvt(this);
+    this->p = new ServerPvt{this};
 }
 
 Server::~Server()
 {
     dPvt();
-    delete&p;
+    delete &p;
 }
 
-Server *Server::createServer(QObject*parent, ActuatorInterfaceItem *ActuatorInterface, const QByteArray &hostName, const QByteArray &passWord, const QByteArray &portNumber)
+Server *Server::createServer(QObject *parent,
+                             ActuatorInterfaceItem *ActuatorInterface,
+                             const QByteArray &hostName,
+                             const QByteArray &passWord,
+                             const QByteArray &portNumber)
 {
-    auto server=new Server(parent);
-    auto p =static_cast<ServerPvt*>(server->p);
-    p->ActuatorInterface=ActuatorInterface;
-    p->hostName=hostName;
-    p->passWord=passWord;
-    p->portNumber=portNumber;
+    auto server = new Server(parent);
+    auto p = static_cast<ServerPvt *>(server->p);
+    p->ActuatorInterface = ActuatorInterface;
+    p->hostName = hostName;
+    p->passWord = passWord;
+    p->portNumber = portNumber;
     p->makeData();
     return server;
 }
@@ -64,20 +66,23 @@ Server *Server::createServer(QObject*parent, ActuatorInterfaceItem *ActuatorInte
 Client *Server::createClient(const QByteArray &dataGroup)
 {
     dPvt();
-    auto interface=p.ActuatorInterface->newObject<ActuatorInterface>(this, dataGroup);
+    auto interface = p.ActuatorInterface->newObject<ActuatorInterface>(this, dataGroup);
 
-    if(interface==nullptr){
-        qWarning()<<QStringLiteral("invalid interface to metaObject: ")+p.ActuatorInterface->metaObject.className();
+    if (interface == nullptr) {
+        qWarning() << QStringLiteral("invalid interface to metaObject: ")
+                          + p.ActuatorInterface->metaObject.className();
         return nullptr;
     }
 
-    if(interface->metaObject()->className()!=p.ActuatorInterface->metaObject.className()){
-        qWarning()<<QStringLiteral("incompatible interface(%1) vs metaObject(%2)").arg(interface->metaObject()->className(), p.ActuatorInterface->metaObject.className());
+    if (interface->metaObject()->className() != p.ActuatorInterface->metaObject.className()) {
+        qWarning() << QStringLiteral("incompatible interface(%1) vs metaObject(%2)")
+                          .arg(interface->metaObject()->className(),
+                               p.ActuatorInterface->metaObject.className());
         return nullptr;
     }
-    if(!dataGroup.isEmpty())
+    if (!dataGroup.isEmpty())
         interface->setDataGroup(dataGroup);
-    auto client=new Client(interface, this);
+    auto client = new Client(interface, this);
     return client;
 }
 
@@ -161,4 +166,4 @@ Server &Server::setPortNumber(const qlonglong &value)
     return p.makeData();
 }
 
-}
+} // namespace QCrossCache

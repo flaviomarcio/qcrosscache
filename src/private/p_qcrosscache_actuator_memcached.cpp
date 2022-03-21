@@ -6,12 +6,12 @@
 #include <QDebug>
 
 #ifdef Q_CROSSCACHE_MEMCACHED
-#include <QTcpSocket>
-#include <stdlib.h>
-#include <stdio.h>
 #include <iostream>
-#include <vector>
 #include <libmemcached/memcached.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
+#include <QTcpSocket>
 extern "C" {
 #include <libmemcached/memcached.h>
 }
@@ -19,55 +19,49 @@ extern "C" {
 
 namespace QCrossCache {
 
-#define dPvt()\
-auto&p = *reinterpret_cast<ActuatorMemcachedPvt*>(this->p)
+#define dPvt() auto &p = *reinterpret_cast<ActuatorMemcachedPvt *>(this->p)
 
-class ActuatorMemcachedPvt{
+class ActuatorMemcachedPvt
+{
 public:
-    ActuatorMemcached*parent=nullptr;
+    ActuatorMemcached *parent = nullptr;
 #ifdef Q_CROSSCACHE_MEMCACHED
     memcached_server_st *memc_server_st = nullptr;
-    memcached_st *memc_st=nullptr;
-    bool memc_connected=false;
+    memcached_st *memc_st = nullptr;
+    bool memc_connected = false;
     uint32_t memc_flag = 0;
 #endif
-    explicit ActuatorMemcachedPvt(ActuatorMemcached *parent)
-    {
-        this->parent=parent;
-    }
+    explicit ActuatorMemcachedPvt(ActuatorMemcached *parent) { this->parent = parent; }
 
-    virtual ~ActuatorMemcachedPvt()
-    {
-        this->disconnect();
-    }
+    virtual ~ActuatorMemcachedPvt() { this->disconnect(); }
 
     bool disconnect()
     {
 #ifdef Q_CROSSCACHE_MEMCACHED
-        if(!this->memc_connected)
+        if (!this->memc_connected)
             return true;
-        this->memc_connected=false;
+        this->memc_connected = false;
         memcached_server_free(this->memc_server_st);
 #endif
         return true;
     }
 };
 
-
 ActuatorMemcached::ActuatorMemcached(QObject *parent) : ActuatorInterface(parent)
 {
-    this->p=new ActuatorMemcachedPvt(this);
+    this->p = new ActuatorMemcachedPvt{this};
 }
 
-ActuatorMemcached::ActuatorMemcached(Server *server, const QByteArray &dataGroup) : ActuatorInterface(server, dataGroup)
+ActuatorMemcached::ActuatorMemcached(Server *server, const QByteArray &dataGroup)
+    : ActuatorInterface(server, dataGroup)
 {
-    this->p=new ActuatorMemcachedPvt(this);
+    this->p = new ActuatorMemcachedPvt{this};
 }
 
 ActuatorMemcached::~ActuatorMemcached()
 {
     dPvt();
-    delete&p;
+    delete &p;
 }
 
 bool ActuatorMemcached::connect()
@@ -76,23 +70,23 @@ bool ActuatorMemcached::connect()
     return ActuatorInterface::connect();
 #else
     dPvt();
-    if(p.memc_connected)
+    if (p.memc_connected)
         return true;
     memcached_return rc;
     p.memc_st = memcached_create(nullptr);
 
-    auto hostName=this->server()->hostName();
-    auto portNumber=this->server()->portNumber().toInt();
-    if(portNumber<=0)
-        portNumber=MEMCACHED_DEFAULT_PORT;
+    auto hostName = this->server()->hostName();
+    auto portNumber = this->server()->portNumber().toInt();
+    if (portNumber <= 0)
+        portNumber = MEMCACHED_DEFAULT_PORT;
 
     p.memc_server_st = memcached_server_list_append(nullptr, hostName, portNumber, &rc);
     rc = memcached_server_push(p.memc_st, p.memc_server_st);
-    if(rc==MEMCACHED_SUCCESS){
-        p.memc_connected=true;
+    if (rc == MEMCACHED_SUCCESS) {
+        p.memc_connected = true;
         return p.memc_connected;
     }
-    qDebug()<<"couldn't add server\n";
+    qDebug() << "couldn't add server\n";
     return false;
 #endif
 }
@@ -123,10 +117,10 @@ bool ActuatorMemcached::clear()
     return ActuatorInterface::clear();
 #else
     dPvt();
-    if(!p.memc_connected)
+    if (!p.memc_connected)
         return false;
-    auto rc=memcached_flush(p.memc_st,0);
-    if(rc!=MEMCACHED_SUCCESS)
+    auto rc = memcached_flush(p.memc_st, 0);
+    if (rc != MEMCACHED_SUCCESS)
         return false;
     return true;
 #endif
@@ -138,12 +132,16 @@ bool ActuatorMemcached::exists(const QByteArray &key)
     return ActuatorInterface::exists(key);
 #else
     dPvt();
-    if(!p.memc_connected)
+    if (!p.memc_connected)
         return false;
     auto ckey = key.toStdString();
-    auto cgroup_key=this->dataGroup().toStdString();
-    auto rc = memcached_exist_by_key(p.memc_st, cgroup_key.c_str(), cgroup_key.length(), ckey.c_str(), ckey.length());
-    if(rc==MEMCACHED_SUCCESS)
+    auto cgroup_key = this->dataGroup().toStdString();
+    auto rc = memcached_exist_by_key(p.memc_st,
+                                     cgroup_key.c_str(),
+                                     cgroup_key.length(),
+                                     ckey.c_str(),
+                                     ckey.length());
+    if (rc == MEMCACHED_SUCCESS)
         return true;
     return false;
 #endif
@@ -155,13 +153,21 @@ bool ActuatorMemcached::put(const QByteArray &key, const QByteArray &data, const
     return ActuatorInterface::put(key, data, expiration);
 #else
     dPvt();
-    if(!p.memc_connected)
+    if (!p.memc_connected)
         return false;
     auto ckey = key.toStdString();
     auto cvalue = data.toStdString();
-    auto cgroup_key=this->dataGroup().toStdString();
-    auto rc = memcached_set_by_key(p.memc_st, cgroup_key.c_str(), cgroup_key.length(), ckey.c_str(), ckey.length(), cvalue.c_str(), cvalue.length(), expiration, p.memc_flag);
-    if(rc==MEMCACHED_SUCCESS)
+    auto cgroup_key = this->dataGroup().toStdString();
+    auto rc = memcached_set_by_key(p.memc_st,
+                                   cgroup_key.c_str(),
+                                   cgroup_key.length(),
+                                   ckey.c_str(),
+                                   ckey.length(),
+                                   cvalue.c_str(),
+                                   cvalue.length(),
+                                   expiration,
+                                   p.memc_flag);
+    if (rc == MEMCACHED_SUCCESS)
         return true;
     return false;
 #endif
@@ -173,14 +179,21 @@ QByteArray ActuatorMemcached::get(const QByteArray &key)
     return ActuatorInterface::get(key);
 #else
     dPvt();
-    if(!p.memc_connected)
+    if (!p.memc_connected)
         return {};
     auto ckey = key.toStdString();
-    auto cgroup_key=this->dataGroup().toStdString();
+    auto cgroup_key = this->dataGroup().toStdString();
     memcached_return rc;
-    size_t value_length=0;
-    char *result = memcached_get_by_key(p.memc_st, cgroup_key.c_str(), cgroup_key.length(), ckey.c_str(), ckey.length(), &value_length, &p.memc_flag, &rc);
-    if(rc!=MEMCACHED_SUCCESS)
+    size_t value_length = 0;
+    char *result = memcached_get_by_key(p.memc_st,
+                                        cgroup_key.c_str(),
+                                        cgroup_key.length(),
+                                        ckey.c_str(),
+                                        ckey.length(),
+                                        &value_length,
+                                        &p.memc_flag,
+                                        &rc);
+    if (rc != MEMCACHED_SUCCESS)
         return {};
     return result;
 #endif
@@ -192,18 +205,30 @@ QByteArray ActuatorMemcached::take(const QByteArray &key)
     return ActuatorInterface::take(key);
 #else
     dPvt();
-    if(!p.memc_connected)
+    if (!p.memc_connected)
         return {};
     auto ckey = key.toStdString();
     memcached_return rc;
-    auto cgroup_key=this->dataGroup().toStdString();
-    size_t value_length=0;
-    char *result = memcached_get_by_key(p.memc_st, cgroup_key.c_str(), cgroup_key.length(), ckey.c_str(), ckey.length(), &value_length, &p.memc_flag, &rc);
-    if(rc!=MEMCACHED_SUCCESS)
+    auto cgroup_key = this->dataGroup().toStdString();
+    size_t value_length = 0;
+    char *result = memcached_get_by_key(p.memc_st,
+                                        cgroup_key.c_str(),
+                                        cgroup_key.length(),
+                                        ckey.c_str(),
+                                        ckey.length(),
+                                        &value_length,
+                                        &p.memc_flag,
+                                        &rc);
+    if (rc != MEMCACHED_SUCCESS)
         return {};
 
-    rc = memcached_delete_by_key(p.memc_st, cgroup_key.c_str(), cgroup_key.length(), ckey.c_str(), ckey.length(), 0);
-    if(rc!=MEMCACHED_SUCCESS)
+    rc = memcached_delete_by_key(p.memc_st,
+                                 cgroup_key.c_str(),
+                                 cgroup_key.length(),
+                                 ckey.c_str(),
+                                 ckey.length(),
+                                 0);
+    if (rc != MEMCACHED_SUCCESS)
         return {};
     return result;
 #endif
@@ -215,12 +240,17 @@ bool ActuatorMemcached::remove(const QByteArray &key)
     return ActuatorInterface::remove(key);
 #else
     dPvt();
-    if(!p.memc_connected)
+    if (!p.memc_connected)
         return {};
     auto ckey = key.toStdString();
-    auto cgroup_key=this->dataGroup().toStdString();
-    auto rc = memcached_delete_by_key(p.memc_st, cgroup_key.c_str(), cgroup_key.length(), ckey.c_str(), ckey.length(), 0);
-    if(rc==MEMCACHED_SUCCESS)
+    auto cgroup_key = this->dataGroup().toStdString();
+    auto rc = memcached_delete_by_key(p.memc_st,
+                                      cgroup_key.c_str(),
+                                      cgroup_key.length(),
+                                      ckey.c_str(),
+                                      ckey.length(),
+                                      0);
+    if (rc == MEMCACHED_SUCCESS)
         return true;
     return false;
 #endif
@@ -232,34 +262,36 @@ QVector<QByteArray> ActuatorMemcached::list(const QByteArray &key)
     return ActuatorInterface::list(key);
 #else
     QVector<QByteArray> __return;
-    auto hostName=this->server()->hostName();
-    auto portNumber=this->server()->portNumber().toInt();
-    if(portNumber<=0)
-        portNumber=MEMCACHED_DEFAULT_PORT;
-    auto thread=new ActuatorMemcachedRequest(hostName, portNumber, QByteArrayLiteral("lru_crawler metadump all"));
+    auto hostName = this->server()->hostName();
+    auto portNumber = this->server()->portNumber().toInt();
+    if (portNumber <= 0)
+        portNumber = MEMCACHED_DEFAULT_PORT;
+    auto thread = new ActuatorMemcachedRequest(hostName,
+                                               portNumber,
+                                               QByteArrayLiteral("lru_crawler metadump all"));
     thread->start().wait();
 
-    for(auto&line:thread->responseBody()){
+    for (auto &line : thread->responseBody()) {
         //lru_crawler metadump all
         //    key=AAAA exp=-1 la=1640459601 cas=62 fetch=yes cls=1 size=69
         //    key=BBBB exp=-1 la=1640459909 cas=63 fetch=no cls=1 size=67
         //    key=CCCCC exp=-1 la=1640459912 cas=64 fetch=no cls=1 size=69
         //    key=AAAX exp=-1 la=1640459916 cas=65 fetch=no cls=1 size=68
         //    END
-        if(!line.startsWith(QByteArrayLiteral("key")))
+        if (!line.startsWith(QByteArrayLiteral("key")))
             continue;
-        auto column=line.split(' ');
-        if(column.isEmpty())
+        auto column = line.split(' ');
+        if (column.isEmpty())
             continue;
-        auto value=column.first().split('=').last();
+        auto value = column.first().split('=').last();
 
-        if(value.isEmpty())
-            continue;
-
-        if(!key.isEmpty() && !value.startsWith(key))
+        if (value.isEmpty())
             continue;
 
-        __return<<value;
+        if (!key.isEmpty() && !value.startsWith(key))
+            continue;
+
+        __return << value;
     }
     delete thread;
     return __return;
