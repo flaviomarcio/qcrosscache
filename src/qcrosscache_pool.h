@@ -8,7 +8,7 @@
 #include <QVariant>
 
 namespace QCrossCache {
-
+class PoolPvt;
 //!
 //! \brief The Pool class
 //!
@@ -117,7 +117,7 @@ public slots:
     QVector<QByteArray> cacheListKeys(const QByteArray &dataGroup);
 
 private:
-    void *p = nullptr;
+    PoolPvt *p = nullptr;
 signals:
 };
 

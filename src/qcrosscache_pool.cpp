@@ -3,26 +3,21 @@
 
 namespace QCrossCache {
 
-static Pool *__instance = nullptr;
+Q_GLOBAL_STATIC(Pool, staticPool)
 
 static void deinit()
 {
-    __instance->stop();
-    __instance->deleteLater();
-    __instance = nullptr;
+    staticPool->stop();
 }
 
 static void init()
 {
-    __instance = new Pool();
-    __instance->setObjectName(__instance->metaObject()->className());
-    __instance->start();
+    staticPool->start();
     qAddPostRoutine(deinit);
 }
 
 Q_COREAPP_STARTUP_FUNCTION(init)
 
-#define dPvt() auto &p = *reinterpret_cast<PoolPvt *>(this->p)
 
 Pool::Pool(QObject *parent) : QObject{parent}
 {
@@ -31,46 +26,40 @@ Pool::Pool(QObject *parent) : QObject{parent}
 
 Pool::~Pool()
 {
-    dPvt();
-    delete &p;
+    delete p;
 }
 
 Pool &Pool::start()
 {
-    dPvt();
-    p.start();
+    p->start();
     return *this;
 }
 
 Pool &Pool::stop()
 {
-    dPvt();
-    p.stop();
+    p->stop();
     return *this;
 }
 
 bool Pool::isStarted()
 {
-    dPvt();
-    return p.isStarted();
+    return p->isStarted();
 }
 
 Pool &Pool::instance()
 {
-    return *__instance;
+    return *staticPool;
 }
 
 Pool &Pool::cacheClearAll()
 {
-    dPvt();
-    p.cacheClearAll();
+    p->cacheClearAll();
     return *this;
 }
 
 Pool &Pool::cacheClear(const QByteArray &dataGroup)
 {
-    dPvt();
-    p.cacheClear(dataGroup);
+    p->cacheClear(dataGroup);
     return *this;
 }
 
@@ -79,40 +68,34 @@ Pool &Pool::cachePut(const QByteArray &dataGroup,
                      const QByteArray &data,
                      const quint64 expiration)
 {
-    dPvt();
-    p.cachePut(dataGroup, key, data, expiration);
+    p->cachePut(dataGroup, key, data, expiration);
     return *this;
 }
 
 Pool &Pool::cacheRemove(const QByteArray &dataGroup, const QByteArray &key)
 {
-    dPvt();
-    p.cacheRemove(dataGroup, key);
+    p->cacheRemove(dataGroup, key);
     return *this;
 }
 
 QByteArray Pool::cacheGet(const QByteArray &dataGroup, const QByteArray &key)
 {
-    dPvt();
-    return p.cacheGet(dataGroup, key);
+    return p->cacheGet(dataGroup, key);
 }
 
 QByteArray Pool::cacheTake(const QByteArray &dataGroup, const QByteArray &key)
 {
-    dPvt();
-    return p.cacheTake(dataGroup, key);
+    return p->cacheTake(dataGroup, key);
 }
 
 QVector<QByteArray> Pool::cacheList(const QByteArray &dataGroup, const QByteArray &key)
 {
-    dPvt();
-    return p.cacheList(dataGroup, key);
+    return p->cacheList(dataGroup, key);
 }
 
 QVector<QByteArray> Pool::cacheListKeys(const QByteArray &dataGroup)
 {
-    dPvt();
-    return p.cacheListKeys(dataGroup);
+    return p->cacheListKeys(dataGroup);
 }
 
 } // namespace QCrossCache
