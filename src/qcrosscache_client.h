@@ -5,7 +5,7 @@
 #include <QVariant>
 
 namespace QCrossCache {
-
+class ClientPvt;
 class ClientItem;
 class Server;
 class ActuatorInterface;
@@ -129,7 +129,7 @@ public:
     virtual QVector<QByteArray> listKeys();
 
 private:
-    void *p = nullptr;
+    ClientPvt *p = nullptr;
 };
 
 //!

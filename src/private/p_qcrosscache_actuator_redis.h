@@ -3,8 +3,9 @@
 #include "../qcrosscache_actuator_interface.h"
 #include "../qcrosscache_actuator_manager.h"
 
-namespace QCrossCache {
 
+namespace QCrossCache {
+class ActuatorRedisPvt;
 //!
 //! \brief The ActuatorRedis class
 //!
@@ -106,7 +107,7 @@ public:
     virtual QVector<QByteArray> listKeys();
 
 private:
-    void *p = nullptr;
+    ActuatorRedisPvt *p = nullptr;
 signals:
 };
 

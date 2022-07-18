@@ -6,8 +6,6 @@
 
 namespace QCrossCache {
 
-#define dPvt() auto &p = *reinterpret_cast<ActuatorRedisPvt *>(this->p)
-
 class ActuatorRedisPvt
 {
 public:
@@ -30,8 +28,7 @@ ActuatorRedis::ActuatorRedis(Server *server, const QByteArray &dataGroup)
 
 ActuatorRedis::~ActuatorRedis()
 {
-    dPvt();
-    delete &p;
+    delete p;
 }
 
 bool ActuatorRedis::connect()
@@ -41,8 +38,8 @@ bool ActuatorRedis::connect()
 
 bool ActuatorRedis::disconnect()
 {
-    dPvt();
-    return p.disconnect();
+
+    return p->disconnect();
 }
 
 bool ActuatorRedis::isConnected()

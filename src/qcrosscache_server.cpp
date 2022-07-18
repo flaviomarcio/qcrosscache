@@ -9,8 +9,6 @@
 
 namespace QCrossCache {
 
-#define dPvt() auto &p = *reinterpret_cast<ServerPvt *>(this->p)
-
 class ServerPvt
 {
 public:
@@ -43,8 +41,8 @@ Server::Server(QObject *parent) : QObject{parent}
 
 Server::~Server()
 {
-    dPvt();
-    delete &p;
+
+    delete p;
 }
 
 Server *Server::createServer(QObject *parent,
@@ -65,105 +63,105 @@ Server *Server::createServer(QObject *parent,
 
 Client *Server::createClient(const QByteArray &dataGroup)
 {
-    dPvt();
-    auto interface = p.ActuatorInterface->newObject<ActuatorInterface>(this, dataGroup);
+
+    auto interface = p->ActuatorInterface->newObject<ActuatorInterface>(this, dataGroup);
 
     if (interface == nullptr) {
         qWarning() << QStringLiteral("invalid interface to metaObject: ")
-                          + p.ActuatorInterface->metaObject.className();
+                          + p->ActuatorInterface->metaObject.className();
         return nullptr;
     }
 
-    if (interface->metaObject()->className() != p.ActuatorInterface->metaObject.className()) {
+    if (interface->metaObject()->className() != p->ActuatorInterface->metaObject.className()) {
         qWarning() << QStringLiteral("incompatible interface(%1) vs metaObject(%2)")
                           .arg(interface->metaObject()->className(),
-                               p.ActuatorInterface->metaObject.className());
+                               p->ActuatorInterface->metaObject.className());
         return nullptr;
     }
     if (!dataGroup.isEmpty())
         interface->setDataGroup(dataGroup);
-    auto client = new Client(interface, this);
+    auto client = new Client{interface, this};
     return client;
 }
 
 const QUuid &Server::uuid()
 {
-    dPvt();
-    return p.uuid;
+
+    return p->uuid;
 }
 
 const QByteArray &Server::service() const
 {
-    dPvt();
-    return p.service;
+
+    return p->service;
 }
 
 Server &Server::setService(const QByteArray &value)
 {
-    dPvt();
-    if (p.service == value)
-        return p.makeData();
-    p.service = value;
+
+    if (p->service == value)
+        return p->makeData();
+    p->service = value;
     emit serviceChanged();
-    return p.makeData();
+    return p->makeData();
 }
 
 const QByteArray &Server::hostName() const
 {
-    dPvt();
-    return p.hostName;
+
+    return p->hostName;
 }
 
 Server &Server::setHostName(const QByteArray &value)
 {
-    dPvt();
-    if (p.hostName == value)
-        return p.makeData();
-    p.hostName = value;
+
+    if (p->hostName == value)
+        return p->makeData();
+    p->hostName = value;
     emit hostNameChanged();
-    return p.makeData();
+    return p->makeData();
 }
 
 const QByteArray &Server::passWord() const
 {
-    dPvt();
-    return p.passWord;
+
+    return p->passWord;
 }
 
 Server &Server::setPassWord(const QByteArray &value)
 {
-    dPvt();
-    if (p.passWord == value)
-        return p.makeData();
-    p.passWord = value;
+
+    if (p->passWord == value)
+        return p->makeData();
+    p->passWord = value;
     emit passWordChanged();
-    return p.makeData();
+    return p->makeData();
 }
 
 const QByteArray &Server::portNumber() const
 {
-    dPvt();
-    return p.portNumber;
+
+    return p->portNumber;
 }
 
 Server &Server::setPortNumber(const QByteArray &value)
 {
-    dPvt();
-    if (p.portNumber == value)
-        return p.makeData();
-    p.portNumber = value;
+
+    if (p->portNumber == value)
+        return p->makeData();
+    p->portNumber = value;
     emit portNumberChanged();
-    return p.makeData();
+    return p->makeData();
 }
 
 Server &Server::setPortNumber(const qlonglong &value)
 {
-    dPvt();
-    if (p.portNumber.toLongLong() == value)
-        return p.makeData();
-    p.portNumber = QByteArray::number(value);
+
+    if (p->portNumber.toLongLong() == value)
+        return p->makeData();
+    p->portNumber = QByteArray::number(value);
     emit portNumberChanged();
-    return p.makeData();
+    return p->makeData();
 }
 
 } // namespace QCrossCache

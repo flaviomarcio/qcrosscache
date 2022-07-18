@@ -9,7 +9,7 @@
 
 namespace QCrossCache {
 class ActuatorInterface;
-
+class ServerPvt;
 //!
 //! \brief The Server class
 //!
@@ -124,7 +124,7 @@ public:
     virtual Server &setPortNumber(const qlonglong &value);
 
 private:
-    void *p = nullptr;
+    ServerPvt *p = nullptr;
 signals:
     void uuidChanged();
     void serviceChanged();

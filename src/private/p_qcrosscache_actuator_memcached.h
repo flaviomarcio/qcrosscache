@@ -8,7 +8,7 @@
 #include <QTimer>
 
 namespace QCrossCache {
-
+class ActuatorMemcachedPvt;
 static const auto MEMCACHED_END_BLOCK = QByteArrayLiteral("END\r\n");
 
 //!
@@ -231,7 +231,7 @@ public:
     virtual QVector<QByteArray> listKeys();
 
 private:
-    void *p = nullptr;
+    ActuatorMemcachedPvt *p = nullptr;
 signals:
 };
 

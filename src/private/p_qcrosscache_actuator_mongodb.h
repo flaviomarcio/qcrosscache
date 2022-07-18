@@ -4,7 +4,7 @@
 #include "../qcrosscache_actuator_manager.h"
 
 namespace QCrossCache {
-
+class ActuatorMongoDbPvt;
 //!
 //! \brief The ActuatorMongoDb class
 //!
@@ -106,7 +106,7 @@ public:
     virtual QVector<QByteArray> listKeys();
 
 private:
-    void *p = nullptr;
+    ActuatorMongoDbPvt *p = nullptr;
 signals:
 };
 

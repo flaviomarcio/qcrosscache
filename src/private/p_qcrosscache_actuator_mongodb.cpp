@@ -6,8 +6,6 @@
 
 namespace QCrossCache {
 
-#define dPvt() auto &p = *reinterpret_cast<ActuatorMongoDbPvt *>(this->p)
-
 class ActuatorMongoDbPvt
 {
 public:
@@ -30,8 +28,7 @@ ActuatorMongoDb::ActuatorMongoDb(Server *server, const QByteArray &dataGroup)
 
 ActuatorMongoDb::~ActuatorMongoDb()
 {
-    dPvt();
-    delete &p;
+    delete p;
 }
 
 bool ActuatorMongoDb::connect()
@@ -41,8 +38,7 @@ bool ActuatorMongoDb::connect()
 
 bool ActuatorMongoDb::disconnect()
 {
-    dPvt();
-    return p.disconnect();
+    return p->disconnect();
 }
 
 bool ActuatorMongoDb::isConnected()

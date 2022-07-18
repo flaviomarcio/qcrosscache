@@ -8,6 +8,7 @@
 #include <QVariant>
 
 namespace QCrossCache {
+class CacheRepositoryPvt;
 
 //!
 //! \brief The CacheRepository class
@@ -40,7 +41,7 @@ public slots:
     void cacheClear();
 
 private:
-    void *p = nullptr;
+    CacheRepositoryPvt *p = nullptr;
 signals:
 };
 

@@ -9,7 +9,7 @@
 
 namespace QCrossCache {
 
-#define dPvt() auto &p = *reinterpret_cast<ActuatorManagerPvt *>(this->p)
+Q_GLOBAL_STATIC(ActuatorManager, staticActuatorManager)
 
 class ActuatorManagerPvt : public QObject
 {
@@ -36,22 +36,15 @@ ActuatorManager::ActuatorManager(QObject *parent) : QObject{parent}
     this->p = new ActuatorManagerPvt{this};
 }
 
-ActuatorManager::~ActuatorManager()
-{
-    dPvt();
-    delete &p;
-}
-
 ActuatorManager &ActuatorManager::instance()
 {
-    static ActuatorManager __instance;
-    return __instance;
+    return *staticActuatorManager;
 }
 
 const ActuatorInterfaceCollection &ActuatorManager::interfaceRegistered()
 {
-    dPvt();
-    return p.interfaceCollection;
+
+    return p->interfaceCollection;
 }
 
 ActuatorInterfaceItem *ActuatorManager::interfaceRegister(const QByteArray &interfaceName,
@@ -66,17 +59,17 @@ ActuatorInterfaceItem *ActuatorManager::interfaceRegister(const QByteArray &inte
         delete object;
         return nullptr;
     }
-    dPvt();
+
     auto interfaceItem = new ActuatorInterfaceItem(interfaceName, metaObject);
-    p.interfaceCollection.insert(interfaceItem->name.toLower(), interfaceItem);
+    p->interfaceCollection.insert(interfaceItem->name.toLower(), interfaceItem);
     delete object;
     return interfaceItem;
 }
 
 ActuatorInterface *ActuatorManager::interfaceCreate(const QByteArray &interfaceName)
 {
-    dPvt();
-    auto interfaceItem = p.interfaceCollection.value(interfaceName.toLower());
+
+    auto interfaceItem = p->interfaceCollection.value(interfaceName.toLower());
     if (interfaceItem == nullptr)
         return nullptr;
 
@@ -88,9 +81,9 @@ Server *ActuatorManager::createServer(const QByteArray &service,
                                       const QByteArray &passWord,
                                       const QByteArray &portNumber)
 {
-    dPvt();
 
-    ActuatorInterfaceItem *ActuatorInterface = p.interfaceCollection.value(service.toLower());
+
+    ActuatorInterfaceItem *ActuatorInterface = p->interfaceCollection.value(service.toLower());
 
     if (ActuatorInterface == nullptr) {
         qWarning() << "invalid interface";
@@ -100,17 +93,17 @@ Server *ActuatorManager::createServer(const QByteArray &service,
     auto server = Server::createServer(this, ActuatorInterface, hostName, passWord, portNumber);
 
     auto serverUuid = server->uuid().toByteArray();
-    if (p.servers.contains(serverUuid)) {
+    if (p->servers.contains(serverUuid)) {
         delete server;
-        return p.servers.value(serverUuid);
+        return p->servers.value(serverUuid);
     }
     if (server == nullptr) {
         qWarning() << "no create server";
         return nullptr;
     }
 
-    QObject::connect(server, &Server::destroyed, &p, &ActuatorManagerPvt::serverDestroyed);
-    p.servers[serverUuid] = server;
+    QObject::connect(server, &Server::destroyed, p, &ActuatorManagerPvt::serverDestroyed);
+    p->servers.insert(serverUuid, server);
     return server;
 }
 

@@ -8,6 +8,7 @@ namespace QCrossCache {
 
 class ActuatorInterfaceItem;
 class Server;
+class ActuatorInterfacePvt;
 
 //!
 //! \brief The ActuatorInterface class
@@ -123,7 +124,7 @@ public:
     virtual QVector<QByteArray> listKeys();
 
 private:
-    void *p = nullptr;
+    ActuatorInterfacePvt *p = nullptr;
 signals:
 };
 

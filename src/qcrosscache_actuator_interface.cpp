@@ -5,8 +5,6 @@
 
 namespace QCrossCache {
 
-#define dPvt() auto &p = *reinterpret_cast<ActuatorInterfacePvt *>(this->p)
-
 class ActuatorInterfacePvt
 {
 public:
@@ -30,40 +28,39 @@ public:
 
 ActuatorInterface::ActuatorInterface(QObject *parent) : QObject{parent}
 {
-    this->p = new ActuatorInterfacePvt(this, nullptr, QByteArray());
+    this->p = new ActuatorInterfacePvt(this, nullptr, {});
 }
 
-ActuatorInterface::ActuatorInterface(Server *server, const QByteArray &dataGroup) : QObject(server)
+ActuatorInterface::ActuatorInterface(Server *server, const QByteArray &dataGroup) : QObject{server}
 {
     this->p = new ActuatorInterfacePvt(this, server, dataGroup);
 }
 
 ActuatorInterface::~ActuatorInterface()
 {
-    dPvt();
-    delete &p;
+    delete p;
 }
 
 Server *ActuatorInterface::server()
 {
-    dPvt();
-    if (p.server != nullptr)
-        return p.server;
-    return &p.serverDefault;
+
+    if (p->server != nullptr)
+        return p->server;
+    return &p->serverDefault;
 }
 
 const QByteArray &ActuatorInterface::dataGroup() const
 {
-    dPvt();
-    if (p.dataGroup.isEmpty())
-        p.dataGroup = QByteArrayLiteral(".");
-    return p.dataGroup;
+
+    if (p->dataGroup.isEmpty())
+        p->dataGroup = QByteArrayLiteral(".");
+    return p->dataGroup;
 }
 
 ActuatorInterface &ActuatorInterface::setDataGroup(const QByteArray &value)
 {
-    dPvt();
-    p.dataGroup = value;
+
+    p->dataGroup = value;
     return *this;
 }
 

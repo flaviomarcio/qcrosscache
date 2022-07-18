@@ -3,8 +3,6 @@
 
 namespace QCrossCache {
 
-#define dPvt() auto &p = *reinterpret_cast<CacheRepositoryPvt *>(this->p)
-
 struct CacheItem
 {
 public:
@@ -53,8 +51,7 @@ CacheRepository::CacheRepository(QObject *parent) : QThread(parent)
 
 CacheRepository::~CacheRepository()
 {
-    dPvt();
-    delete &p;
+    delete p;
 }
 
 void CacheRepository::run()
@@ -64,25 +61,23 @@ void CacheRepository::run()
 
 void CacheRepository::cacheGet(const QByteArray &key)
 {
-    dPvt();
     auto threadResponse = dynamic_cast<CacheRequest *>(QObject::sender());
     if (threadResponse == nullptr)
         return;
-    const auto &item = p.cacheCollection.value(key);
+    const auto &item = p->cacheCollection.value(key);
     emit threadResponse->responseData(item.data);
 }
 
 void CacheRepository::cacheTake(const QByteArray &key)
 {
-    dPvt();
     auto threadResponse = dynamic_cast<CacheRequest *>(QObject::sender());
     if (threadResponse == nullptr)
         return;
-    if (!p.cacheCollection.contains(key)) {
+    if (!p->cacheCollection.contains(key)) {
         emit threadResponse->responseData("");
         return;
     }
-    const auto &item = p.cacheCollection.take(key);
+    const auto &item = p->cacheCollection.take(key);
     emit threadResponse->responseData(item.data);
 }
 
@@ -90,25 +85,22 @@ void CacheRepository::cachePut(const QByteArray &key,
                                const QByteArray &data,
                                const quint64 expiration)
 {
-    dPvt();
-    auto &item = p.cacheCollection[key];
+    auto &item = p->cacheCollection[key];
     item.setData(data, expiration);
 }
 
 void CacheRepository::cacheRemove(const QByteArray &key)
 {
-    dPvt();
-    p.cacheCollection.remove(key);
+    p->cacheCollection.remove(key);
 }
 
 void CacheRepository::cacheList(const QByteArray &key)
 {
-    dPvt();
     auto threadResponse = dynamic_cast<CacheRequest *>(QObject::sender());
     if (threadResponse == nullptr)
         return;
     QVector<QByteArray> list;
-    QHashIterator<QByteArray, CacheItem> i(p.cacheCollection);
+    QHashIterator<QByteArray, CacheItem> i(p->cacheCollection);
     while (i.hasNext()) {
         i.next();
         if (i.key().startsWith(key))
@@ -119,18 +111,17 @@ void CacheRepository::cacheList(const QByteArray &key)
 
 void CacheRepository::cacheListKeys()
 {
-    dPvt();
     auto threadResponse = dynamic_cast<CacheRequest *>(QObject::sender());
     if (threadResponse == nullptr)
         return;
-    auto list = QVector<QByteArray>::fromList(p.cacheCollection.keys());
+    auto list = QVector<QByteArray>::fromList(p->cacheCollection.keys());
     emit threadResponse->responseList(list);
 }
 
 void CacheRepository::cacheClear()
 {
-    dPvt();
-    p.cacheCollection.clear();
+
+    p->cacheCollection.clear();
 }
 
 } // namespace QCrossCache

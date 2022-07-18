@@ -5,7 +5,7 @@
 #include "../qcrosscache_types.h"
 
 namespace QCrossCache {
-
+class ActuatorLocalPvt;
 //!
 //! \brief The ActuatorLocal class
 //!
@@ -95,7 +95,7 @@ public:
     virtual QVector<QByteArray> listKeys();
 
 private:
-    void *p = nullptr;
+    ActuatorLocalPvt *p = nullptr;
 };
 
 Q_CROSSCACHE_REGISTER_INTERFACE(local, ActuatorLocal)

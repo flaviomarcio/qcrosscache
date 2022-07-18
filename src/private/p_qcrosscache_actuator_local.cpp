@@ -4,8 +4,6 @@
 
 namespace QCrossCache {
 
-#define dPvt() auto &p = *reinterpret_cast<ActuatorLocalPvt *>(this->p)
-
 class ActuatorLocalPvt
 {
 public:
@@ -29,14 +27,13 @@ ActuatorLocal::ActuatorLocal(Server *server, const QByteArray &dataGroup)
 
 ActuatorLocal::~ActuatorLocal()
 {
-    dPvt();
-    delete &p;
+    delete p;
 }
 
 bool ActuatorLocal::connect()
 {
-    dPvt();
-    return p.instance.isStarted();
+
+    return p->instance.isStarted();
 }
 
 bool ActuatorLocal::disconnect()
@@ -46,47 +43,47 @@ bool ActuatorLocal::disconnect()
 
 bool ActuatorLocal::clear()
 {
-    dPvt();
-    p.instance.cacheClear(this->dataGroup());
+
+    p->instance.cacheClear(this->dataGroup());
     return true;
 }
 
 bool ActuatorLocal::put(const QByteArray &key, const QByteArray &data, const quint64 expiration)
 {
-    dPvt();
-    p.instance.cachePut(this->dataGroup(), key, data, expiration);
+
+    p->instance.cachePut(this->dataGroup(), key, data, expiration);
     return true;
 }
 
 QByteArray ActuatorLocal::get(const QByteArray &key)
 {
-    dPvt();
-    return p.instance.cacheGet(this->dataGroup(), key);
+
+    return p->instance.cacheGet(this->dataGroup(), key);
 }
 
 QByteArray ActuatorLocal::take(const QByteArray &key)
 {
-    dPvt();
-    return p.instance.cacheTake(this->dataGroup(), key);
+
+    return p->instance.cacheTake(this->dataGroup(), key);
 }
 
 bool ActuatorLocal::remove(const QByteArray &key)
 {
-    dPvt();
-    p.instance.cacheRemove(this->dataGroup(), key);
+
+    p->instance.cacheRemove(this->dataGroup(), key);
     return true;
 }
 
 QVector<QByteArray> ActuatorLocal::list(const QByteArray &key)
 {
-    dPvt();
-    return p.instance.cacheList(this->dataGroup(), key);
+
+    return p->instance.cacheList(this->dataGroup(), key);
 }
 
 QVector<QByteArray> ActuatorLocal::listKeys()
 {
-    dPvt();
-    return p.instance.cacheListKeys(this->dataGroup());
+
+    return p->instance.cacheListKeys(this->dataGroup());
 }
 
 } // namespace QCrossCache

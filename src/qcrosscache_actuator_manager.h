@@ -6,15 +6,15 @@
 #include <QVariant>
 
 #define Q_CROSSCACHE_REGISTER_INTERFACE(serviceName, object) \
-    static auto const interface__##object = QCrossCache::ActuatorManager::instance() \
-                                                .interfaceRegister(#serviceName, \
-                                                                   object::staticMetaObject);
+static auto const interface__##object = QCrossCache::ActuatorManager::instance() .interfaceRegister(#serviceName, object::staticMetaObject);
 
 namespace QCrossCache {
 
 class Session;
 class Server;
 class ActuatorInterface;
+class ActuatorManagerPvt;
+
 //!
 //! \brief The ActuatorManager class
 //!
@@ -27,10 +27,6 @@ public:
     //! \param parent
     //!
     Q_INVOKABLE explicit ActuatorManager(QObject *parent = nullptr);
-
-    //!
-    //!
-    ~ActuatorManager();
 
     //!
     //! \brief instance
@@ -80,7 +76,7 @@ public:
     Server *createServer(const QVariant &settings);
 
 private:
-    void *p = nullptr;
+    ActuatorManagerPvt *p = nullptr;
 signals:
 };
 
