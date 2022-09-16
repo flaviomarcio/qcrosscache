@@ -15,13 +15,13 @@ public:
     bool disconnect() { return true; }
 };
 
-ActuatorMongoDb::ActuatorMongoDb(QObject *parent) : ActuatorInterface(parent)
+ActuatorMongoDb::ActuatorMongoDb(QObject *parent) : ActuatorInterface{parent}
 {
     this->p = new ActuatorMongoDbPvt{this};
 }
 
 ActuatorMongoDb::ActuatorMongoDb(Server *server, const QByteArray &dataGroup)
-    : ActuatorInterface(server, dataGroup)
+    : ActuatorInterface{server, dataGroup}
 {
     this->p = new ActuatorMongoDbPvt{this};
 }

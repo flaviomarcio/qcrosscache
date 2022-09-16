@@ -15,13 +15,13 @@ public:
     bool disconnect() { return true; }
 };
 
-ActuatorRedis::ActuatorRedis(QObject *parent) : ActuatorInterface(parent)
+ActuatorRedis::ActuatorRedis(QObject *parent) : ActuatorInterface{parent}
 {
     this->p = new ActuatorRedisPvt{this};
 }
 
 ActuatorRedis::ActuatorRedis(Server *server, const QByteArray &dataGroup)
-    : ActuatorInterface(server, dataGroup)
+    : ActuatorInterface{server, dataGroup}
 {
     this->p = new ActuatorRedisPvt{this};
 }

@@ -19,7 +19,7 @@ extern "C" {
 
 namespace QCrossCache {
 
-class ActuatorMemcachedPvt
+class ActuatorMemcachedPvt:public QObject
 {
 public:
     ActuatorMemcached *parent = nullptr;
@@ -29,7 +29,10 @@ public:
     bool memc_connected = false;
     uint32_t memc_flag = 0;
 #endif
-    explicit ActuatorMemcachedPvt(ActuatorMemcached *parent) { this->parent = parent; }
+    explicit ActuatorMemcachedPvt(ActuatorMemcached *parent):QObject{parent}
+    {
+        this->parent = parent;
+    }
 
     virtual ~ActuatorMemcachedPvt() { this->disconnect(); }
 
@@ -45,20 +48,15 @@ public:
     }
 };
 
-ActuatorMemcached::ActuatorMemcached(QObject *parent) : ActuatorInterface(parent)
+ActuatorMemcached::ActuatorMemcached(QObject *parent) : ActuatorInterface{parent}
 {
     this->p = new ActuatorMemcachedPvt{this};
 }
 
 ActuatorMemcached::ActuatorMemcached(Server *server, const QByteArray &dataGroup)
-    : ActuatorInterface(server, dataGroup)
+    : ActuatorInterface{server, dataGroup}
 {
     this->p = new ActuatorMemcachedPvt{this};
-}
-
-ActuatorMemcached::~ActuatorMemcached()
-{
-    delete p;
 }
 
 bool ActuatorMemcached::connect()

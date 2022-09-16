@@ -14,13 +14,13 @@ public:
     virtual ~ActuatorLocalPvt() {}
 };
 
-ActuatorLocal::ActuatorLocal(QObject *parent) : ActuatorInterface(parent)
+ActuatorLocal::ActuatorLocal(QObject *parent) : ActuatorInterface{parent}
 {
     this->p = new ActuatorLocalPvt{this};
 }
 
 ActuatorLocal::ActuatorLocal(Server *server, const QByteArray &dataGroup)
-    : ActuatorInterface(server, dataGroup)
+    : ActuatorInterface{server, dataGroup}
 {
     this->p = new ActuatorLocalPvt{this};
 }

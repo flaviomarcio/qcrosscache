@@ -151,10 +151,6 @@ public:
     explicit ActuatorMemcached(Server *server, const QByteArray &dataGroup);
 
     //!
-    //!
-    ~ActuatorMemcached();
-
-    //!
     //! \brief connect
     //! \return
     //!
