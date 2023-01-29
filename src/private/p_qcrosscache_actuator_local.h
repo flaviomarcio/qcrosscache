@@ -28,10 +28,6 @@ public:
     explicit ActuatorLocal(Server *session, const QByteArray &dataGroup);
 
     //!
-    //!
-    ~ActuatorLocal();
-
-    //!
     //! \brief connect
     //! \return
     //!

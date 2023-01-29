@@ -4,14 +4,17 @@
 
 namespace QCrossCache {
 
-class ActuatorLocalPvt
+class ActuatorLocalPvt:public QObject
 {
 public:
     ActuatorLocal *parent = nullptr;
     QMetaObject *actuatorMetaObject = nullptr;
     Pool &instance = QCrossCache::Pool::instance();
-    explicit ActuatorLocalPvt(ActuatorLocal *parent) { this->parent = parent; }
-    virtual ~ActuatorLocalPvt() {}
+    explicit ActuatorLocalPvt(ActuatorLocal *parent)
+        :QObject{parent}
+    {
+        this->parent = parent;
+    }
 };
 
 ActuatorLocal::ActuatorLocal(QObject *parent) : ActuatorInterface{parent}
@@ -23,11 +26,6 @@ ActuatorLocal::ActuatorLocal(Server *server, const QByteArray &dataGroup)
     : ActuatorInterface{server, dataGroup}
 {
     this->p = new ActuatorLocalPvt{this};
-}
-
-ActuatorLocal::~ActuatorLocal()
-{
-    delete p;
 }
 
 bool ActuatorLocal::connect()
