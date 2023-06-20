@@ -1,5 +1,4 @@
 #include "./p_qcrosscache_pool.h"
-#include "../../../qstm/src/qstm_types.h"
 #include "./p_qcrosscache_cache_repository.h"
 #include "./p_qcrosscache_cache_request.h"
 #include <QCoreApplication>
