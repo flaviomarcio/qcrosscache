@@ -10,20 +10,18 @@ class ActuatorMongoDbPvt
 {
 public:
     ActuatorMongoDb *parent = nullptr;
-    explicit ActuatorMongoDbPvt(ActuatorMongoDb *parent) { this->parent = parent; }
+    explicit ActuatorMongoDbPvt(ActuatorMongoDb *parent):parent{parent} {}
     virtual ~ActuatorMongoDbPvt() { this->disconnect(); }
     bool disconnect() { return true; }
 };
 
-ActuatorMongoDb::ActuatorMongoDb(QObject *parent) : ActuatorInterface{parent}
+ActuatorMongoDb::ActuatorMongoDb(QObject *parent) : ActuatorInterface{parent}, p{new ActuatorMongoDbPvt{this}}
 {
-    this->p = new ActuatorMongoDbPvt{this};
 }
 
 ActuatorMongoDb::ActuatorMongoDb(Server *server, const QByteArray &dataGroup)
-    : ActuatorInterface{server, dataGroup}
+    : ActuatorInterface{server, dataGroup}, p{new ActuatorMongoDbPvt{this}}
 {
-    this->p = new ActuatorMongoDbPvt{this};
 }
 
 ActuatorMongoDb::~ActuatorMongoDb()

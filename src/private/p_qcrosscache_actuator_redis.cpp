@@ -10,20 +10,18 @@ class ActuatorRedisPvt
 {
 public:
     ActuatorRedis *parent = nullptr;
-    explicit ActuatorRedisPvt(ActuatorRedis *parent) { this->parent = parent; }
+    explicit ActuatorRedisPvt(ActuatorRedis *parent):parent{parent} {}
     virtual ~ActuatorRedisPvt() { this->disconnect(); }
     bool disconnect() { return true; }
 };
 
-ActuatorRedis::ActuatorRedis(QObject *parent) : ActuatorInterface{parent}
+ActuatorRedis::ActuatorRedis(QObject *parent) : ActuatorInterface{parent}, p{new ActuatorRedisPvt{this}}
 {
-    this->p = new ActuatorRedisPvt{this};
 }
 
 ActuatorRedis::ActuatorRedis(Server *server, const QByteArray &dataGroup)
-    : ActuatorInterface{server, dataGroup}
+    : ActuatorInterface{server, dataGroup}, p{new ActuatorRedisPvt{this}}
 {
-    this->p = new ActuatorRedisPvt{this};
 }
 
 ActuatorRedis::~ActuatorRedis()

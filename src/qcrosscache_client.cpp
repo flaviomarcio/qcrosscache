@@ -13,10 +13,8 @@ public:
     Client *parent = nullptr;
     ActuatorInterface *interface = nullptr;
 
-    explicit ClientPvt(Client *parent, ActuatorInterface *interface)
+    explicit ClientPvt(Client *parent, ActuatorInterface *interface):parent{parent},interface{interface}
     {
-        this->parent = parent;
-        this->interface = interface;
         if (this->interface != nullptr)
             this->interface->setParent(parent);
     }
@@ -42,9 +40,8 @@ Client::Client(const QByteArray &dataGroup, QObject *parent) : QObject{parent}
     this->p = new ClientPvt(this, acLocal);
 }
 
-Client::Client(ActuatorInterface *interface, QObject *parent) : QObject{parent}
+Client::Client(ActuatorInterface *interface, QObject *parent) : QObject{parent}, p{new ClientPvt(this, interface)}
 {
-    this->p = new ClientPvt(this, interface);
 }
 
 Client::~Client()

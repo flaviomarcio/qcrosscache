@@ -29,10 +29,7 @@ public:
     bool memc_connected = false;
     uint32_t memc_flag = 0;
 #endif
-    explicit ActuatorMemcachedPvt(ActuatorMemcached *parent):QObject{parent}
-    {
-        this->parent = parent;
-    }
+    explicit ActuatorMemcachedPvt(ActuatorMemcached *parent):QObject{parent},parent{parent}{}
 
     virtual ~ActuatorMemcachedPvt() { this->disconnect(); }
 
@@ -48,15 +45,14 @@ public:
     }
 };
 
-ActuatorMemcached::ActuatorMemcached(QObject *parent) : ActuatorInterface{parent}
+ActuatorMemcached::ActuatorMemcached(QObject *parent) : ActuatorInterface{parent}, p{new ActuatorMemcachedPvt{this}}
 {
-    this->p = new ActuatorMemcachedPvt{this};
 }
 
 ActuatorMemcached::ActuatorMemcached(Server *server, const QByteArray &dataGroup)
-    : ActuatorInterface{server, dataGroup}
+    : ActuatorInterface{server, dataGroup}, p{new ActuatorMemcachedPvt{this}}
 {
-    this->p = new ActuatorMemcachedPvt{this};
+
 }
 
 bool ActuatorMemcached::connect()

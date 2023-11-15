@@ -16,24 +16,19 @@ public:
     explicit ActuatorInterfacePvt(ActuatorInterface *parent,
                                   Server *server,
                                   const QByteArray &dataGroup)
-        : serverDefault(parent)
+        : parent{parent}, server{server},serverDefault{parent},dataGroup{dataGroup}
     {
-        this->parent = parent;
-        this->server = server;
-        this->dataGroup = dataGroup;
     }
 
     virtual ~ActuatorInterfacePvt() {}
 };
 
-ActuatorInterface::ActuatorInterface(QObject *parent) : QObject{parent}
+ActuatorInterface::ActuatorInterface(QObject *parent) : QObject{parent}, p{new ActuatorInterfacePvt(this, nullptr, {})}
 {
-    this->p = new ActuatorInterfacePvt(this, nullptr, {});
 }
 
-ActuatorInterface::ActuatorInterface(Server *server, const QByteArray &dataGroup) : QObject{server}
+ActuatorInterface::ActuatorInterface(Server *server, const QByteArray &dataGroup) : QObject{server}, p{new ActuatorInterfacePvt(this, server, dataGroup)}
 {
-    this->p = new ActuatorInterfacePvt(this, server, dataGroup);
 }
 
 ActuatorInterface::~ActuatorInterface()

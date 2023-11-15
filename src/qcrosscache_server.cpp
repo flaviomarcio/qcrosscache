@@ -19,7 +19,7 @@ public:
     QByteArray passWord;
     QByteArray portNumber;
     ActuatorInterfaceItem *ActuatorInterface = nullptr;
-    explicit ServerPvt(Server *parent) { this->parent = parent; }
+    explicit ServerPvt(Server *parent): parent{parent} {}
 
     virtual ~ServerPvt() {}
 
@@ -34,9 +34,8 @@ public:
     }
 };
 
-Server::Server(QObject *parent) : QObject{parent}
+Server::Server(QObject *parent) : QObject{parent}, p{new ServerPvt{this}}
 {
-    this->p = new ServerPvt{this};
 }
 
 Server::~Server()
@@ -51,7 +50,7 @@ Server *Server::createServer(QObject *parent,
                              const QByteArray &passWord,
                              const QByteArray &portNumber)
 {
-    auto server = new Server(parent);
+    auto server = new Server{parent};
     auto p = static_cast<ServerPvt *>(server->p);
     p->ActuatorInterface = ActuatorInterface;
     p->hostName = hostName;

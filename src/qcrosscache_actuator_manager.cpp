@@ -17,12 +17,10 @@ public:
     ActuatorManager *parent = nullptr;
     ActuatorInterfaceCollection interfaceCollection;
     QHash<QByteArray, Server *> servers;
-    explicit ActuatorManagerPvt(ActuatorManager *parent) : QObject{parent}
+    explicit ActuatorManagerPvt(ActuatorManager *parent) : QObject{parent}, parent{parent}
     {
-        this->parent = parent;
     }
 
-    virtual ~ActuatorManagerPvt() {}
 public slots:
     void serverDestroyed(QObject *object = nullptr)
     {
@@ -31,9 +29,8 @@ public slots:
     }
 };
 
-ActuatorManager::ActuatorManager(QObject *parent) : QObject{parent}
+ActuatorManager::ActuatorManager(QObject *parent) : QObject{parent}, p{new ActuatorManagerPvt{this}}
 {
-    this->p = new ActuatorManagerPvt{this};
 }
 
 ActuatorManager &ActuatorManager::instance()

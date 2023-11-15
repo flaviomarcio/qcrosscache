@@ -36,17 +36,14 @@ public:
     CacheRepository *parent = nullptr;
     QByteArray dataGroup;
     CacheCollection cacheCollection;
-    explicit CacheRepositoryPvt(CacheRepository *parent) : QObject{parent}
+    explicit CacheRepositoryPvt(CacheRepository *parent) : QObject{parent}, parent{parent}
     {
-        this->parent = parent;
     }
 
-    virtual ~CacheRepositoryPvt() {}
 };
 
-CacheRepository::CacheRepository(QObject *parent) : QThread(parent)
+CacheRepository::CacheRepository(QObject *parent) : QThread{parent}, p{new CacheRepositoryPvt{this}}
 {
-    this->p = new CacheRepositoryPvt{this};
 }
 
 CacheRepository::~CacheRepository()

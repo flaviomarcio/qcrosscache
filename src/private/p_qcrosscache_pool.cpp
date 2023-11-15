@@ -7,9 +7,8 @@
 
 namespace QCrossCache {
 
-PoolPvt::PoolPvt(Pool *parent)
+PoolPvt::PoolPvt(Pool *parent):parent{parent}
 {
-    this->parent = parent;
 }
 
 PoolPvt::~PoolPvt()

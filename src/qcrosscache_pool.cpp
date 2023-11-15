@@ -19,9 +19,8 @@ static void init()
 Q_COREAPP_STARTUP_FUNCTION(init)
 
 
-Pool::Pool(QObject *parent) : QObject{parent}
+Pool::Pool(QObject *parent) : QObject{parent}, p{new PoolPvt{this}}
 {
-    this->p = new PoolPvt{this};
 }
 
 Pool::~Pool()

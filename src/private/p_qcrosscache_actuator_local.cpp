@@ -10,22 +10,16 @@ public:
     ActuatorLocal *parent = nullptr;
     QMetaObject *actuatorMetaObject = nullptr;
     Pool &instance = QCrossCache::Pool::instance();
-    explicit ActuatorLocalPvt(ActuatorLocal *parent)
-        :QObject{parent}
-    {
-        this->parent = parent;
-    }
+    explicit ActuatorLocalPvt(ActuatorLocal *parent):QObject{parent}, parent{parent}{}
 };
 
-ActuatorLocal::ActuatorLocal(QObject *parent) : ActuatorInterface{parent}
+ActuatorLocal::ActuatorLocal(QObject *parent) : ActuatorInterface{parent}, p{new ActuatorLocalPvt{this}}
 {
-    this->p = new ActuatorLocalPvt{this};
 }
 
 ActuatorLocal::ActuatorLocal(Server *server, const QByteArray &dataGroup)
-    : ActuatorInterface{server, dataGroup}
+    : ActuatorInterface{server, dataGroup}, p{new ActuatorLocalPvt{this}}
 {
-    this->p = new ActuatorLocalPvt{this};
 }
 
 bool ActuatorLocal::connect()
